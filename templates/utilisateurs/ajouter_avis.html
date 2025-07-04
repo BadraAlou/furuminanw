@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-star me-2 text-warning"></i>
+                        {{ titre }}
+                    </h2>
+                    <p class="mb-0 text-muted">Partagez votre expérience avec la communauté Furu Minanw</p>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="avisForm">
+                        {% csrf_token %}
+                        
+                        <!-- Section notation -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Note globale <span class="text-danger">*</span></label>
+                            <div class="rating-container">
+                                <div class="star-rating" id="starRating">
+                                    {% for i in "12345" %}
+                                        <i class="far fa-star star" data-rating="{{ forloop.counter }}"></i>
+                                    {% endfor %}
+                                </div>
+                                {{ form.note }}
+                                <div class="rating-text mt-2">
+                                    <span id="ratingText">Cliquez sur les étoiles pour noter</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Titre de l'avis -->
+                        <div class="mb-3">
+                            {{ form.titre|as_crispy_field }}
+                        </div>
+                        
+                        <!-- Contenu de l'avis -->
+                        <div class="mb-3">
+                            <label for="{{ form.contenu.id_for_label }}" class="form-label fw-bold">
+                                {{ form.contenu.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.contenu }}
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-muted">{{ form.contenu.help_text }}</small>
+                                <small class="text-muted">
+                                    <span id="charCount">0</span>/500 caractères
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- Date du mariage -->
+                        <div class="mb-4">
+                            {{ form.date_mariage|as_crispy_field }}
+                        </div>
+                        
+                        <!-- Section photos -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">
+                                <i class="fas fa-camera me-2"></i>
+                                Photos de votre mariage (optionnel)
+                            </h5>
+                            <p class="text-muted mb-3">Partagez jusqu'à 3 photos de votre mariage (JPG/PNG, max 5MB chacune)</p>
+                            
+                            <div id="photosContainer">
+                                {{ formset.management_form }}
+                                {% for form in formset %}
+                                    <div class="photo-form mb-3" data-form-index="{{ forloop.counter0 }}">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Photo {{ forloop.counter }}</label>
+                                                        {{ form.image }}
+                                                        {% if form.image.errors %}
+                                                            <div class="text-danger small">{{ form.image.errors }}</div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        {{ form.legende|as_crispy_field }}
+                                                    </div>
+                                                </div>
+                                                <div class="photo-preview mt-2" style="display: none;">
+                                                    <img class="preview-img" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">
+                                                </div>
+                                                {{ form.DELETE }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Informations importantes -->
+                        <div class="alert alert-info">
+                            <h6 class="mb-2">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Informations importantes
+                            </h6>
+                            <ul class="mb-0">
+                                <li>Votre avis sera examiné par notre équipe avant publication</li>
+                                <li>Seuls les avis authentiques et constructifs sont publiés</li>
+                                <li>Vous recevrez une notification par email une fois votre avis modéré</li>
+                                <li>Votre nom sera affiché selon vos préférences de confidentialité</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Boutons d'action -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{% url 'utilisateurs:mes_avis' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-paper-plane me-2"></i>Publier mon avis
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.star-rating {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.star {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    margin-right: 5px;
+}
+
+.star:hover,
+.star.active {
+    color: #ffc107;
+}
+
+.rating-text {
+    font-weight: 500;
+    color: var(--color-primary);
+}
+
+.photo-form .card {
+    border: 2px dashed #ddd;
+    transition: all 0.3s ease;
+}
+
+.photo-form .card:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-accent);
+}
+
+.preview-img {
+    border: 2px solid var(--color-primary);
+}
+
+#charCount {
+    font-weight: 500;
+}
+
+.char-warning {
+    color: #ffc107 !important;
+}
+
+.char-danger {
+    color: #dc3545 !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion du système de notation par étoiles
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('id_note');
+    const ratingText = document.getElementById('ratingText');
+    
+    const ratingTexts = {
+        1: 'Très déçu(e)',
+        2: 'Déçu(e)',
+        3: 'Satisfait(e)',
+        4: 'Très satisfait(e)',
+        5: 'Excellent !'
+    };
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.dataset.rating);
+            ratingInput.value = rating;
+            ratingText.textContent = ratingTexts[rating];
+            
+            // Mettre à jour l'affichage des étoiles
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.remove('far');
+                    s.classList.add('fas', 'active');
+                } else {
+                    s.classList.remove('fas', 'active');
+                    s.classList.add('far');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const rating = parseInt(this.dataset.rating);
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    });
+    
+    document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        const currentRating = parseInt(ratingInput.value) || 0;
+        stars.forEach((s, index) => {
+            if (index < currentRating) {
+                s.style.color = '#ffc107';
+            } else {
+                s.style.color = '#ddd';
+            }
+        });
+    });
+    
+    // Compteur de caractères
+    const contenuTextarea = document.getElementById('id_contenu');
+    const charCount = document.getElementById('charCount');
+    
+    function updateCharCount() {
+        const count = contenuTextarea.value.length;
+        charCount.textContent = count;
+        
+        // Changer la couleur selon le nombre de caractères
+        charCount.className = '';
+        if (count < 100) {
+            charCount.classList.add('text-danger');
+        } else if (count > 450) {
+            charCount.classList.add('char-warning');
+        } else if (count >= 500) {
+            charCount.classList.add('char-danger');
+        } else {
+            charCount.classList.add('text-success');
+        }
+    }
+    
+    contenuTextarea.addEventListener('input', updateCharCount);
+    updateCharCount(); // Initialiser
+    
+    // Prévisualisation des images
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            const previewContainer = this.closest('.photo-form').querySelector('.photo-preview');
+            const previewImg = previewContainer.querySelector('.preview-img');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        });
+    });
+    
+    // Validation du formulaire
+    document.getElementById('avisForm').addEventListener('submit', function(e) {
+        const rating = parseInt(ratingInput.value);
+        const contenu = contenuTextarea.value.trim();
+        
+        if (!rating || rating < 1) {
+            e.preventDefault();
+            alert('Veuillez donner une note en cliquant sur les étoiles.');
+            return;
+        }
+        
+        if (contenu.length < 100) {
+            e.preventDefault();
+            alert('Votre avis doit contenir au moins 100 caractères.');
+            contenuTextarea.focus();
+            return;
+        }
+        
+        if (contenu.length > 500) {
+            e.preventDefault();
+            alert('Votre avis ne peut pas dépasser 500 caractères.');
+            contenuTextarea.focus();
+            return;
+        }
+    });
+});
+</script>
+{% endblock %}

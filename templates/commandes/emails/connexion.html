@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle connexion - Furu Minanw</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #C27C4A;
+            color: white;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .alert-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .connection-details {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .action-button {
+            display: inline-block;
+            background-color: #dc3545;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://www.furuminanw.com/static/img/logo.png" alt="Furu Minanw Logo" height="60">
+            <h1>Nouvelle connexion détectée</h1>
+        </div>
+
+        <div class="content">
+            <div class="alert-box">
+                <h3>Bonjour {{ user.first_name }},</h3>
+                <p>Nous avons détecté une nouvelle connexion à votre compte Furu Minanw.</p>
+            </div>
+
+            <div class="connection-details">
+                <h4>Détails de la connexion :</h4>
+                <ul>
+                    <li>Date : {{ connection_date }}</li>
+                    <li>Heure : {{ connection_time }}</li>
+                    <li>Localisation : {{ location }}</li>
+                    <li>Appareil : {{ device }}</li>
+                </ul>
+            </div>
+
+            <p>Si vous ne reconnaissez pas cette activité, veuillez sécuriser votre compte immédiatement :</p>
+
+            <center>
+                <a href="{{ security_url }}" class="action-button">
+                    Signaler une connexion suspecte
+                </a>
+            </center>
+
+            <p>Pour votre sécurité, nous vous recommandons de :</p>
+            <ul>
+                <li>Changer votre mot de passe</li>
+                <li>Activer l'authentification à deux facteurs</li>
+                <li>Vérifier régulièrement l'activité de votre compte</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>&copy; {% now "Y" %} Furu Minanw. Tous droits réservés.</p>
+            <p>Bamako, Mali | contact@furuminanw.com</p>
+        </div>
+    </div>
+</body>
+</html>

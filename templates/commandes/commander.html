@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+
+    <div class="row">
+        <!-- Formulaire de commande -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Informations de livraison</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="commandeForm">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.telephone|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.adresse_livraison|as_crispy_field }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.ville|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.code_postal|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Méthode de paiement à la livraison</label>
+                            <div class="payment-options">
+                                {% for value, text in form.methode_paiement.field.choices %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="methode_paiement" id="payment_{{ value }}" value="{{ value }}" {% if value == form.methode_paiement.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="payment_{{ value }}">
+                                            {{ text }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Section précisions de personnalisation -->
+                        {% if produits_avec_options %}
+                            <div class="mb-4">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-magic me-2"></i>
+                                    Précisions pour vos personnalisations
+                                </h5>
+                                <div class="alert alert-info">
+                                    <h6 class="mb-2">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Instructions importantes
+                                    </h6>
+                                    <p class="mb-0">
+                                        Veuillez remplir les informations demandées pour chaque option de personnalisation que vous avez choisie.
+                                        Ces précisions nous permettront de réaliser votre commande exactement selon vos souhaits.
+                                    </p>
+                                </div>
+
+                                {% for produit in produits_avec_options %}
+                                    <div class="card mb-3 personnalisation-card">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-box me-2"></i>
+                                                {{ produit.pack.nom }} ({{ produit.quantite }} x)
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            {% for option in produit.options %}
+                                                <div class="option-precision mb-4">
+                                                    <h6 class="text-primary mb-3">
+                                                        <i class="fas fa-cog me-2"></i>
+                                                        {{ option.nom }}
+                                                    </h6>
+
+                                                    <!-- Champs dynamiques selon le type d'option -->
+                                                    {% if 'gravure' in option.nom|lower or 'graver' in option.nom|lower %}
+                                                        {% if 'prénom' in option.nom|lower or 'nom' in option.nom|lower %}
+                                                            <div class="mb-3">
+                                                                <label class="form-label">
+                                                                    Quel prénom/nom graver ? <span class="text-danger">*</span>
+                                                                </label>
+                                                                <textarea name="precision_{{ produit.pack.id }}_{{ option.id }}_texte_a_graver"
+                                                                         class="form-control"
+                                                                         rows="2"
+                                                                         placeholder="Ex: Marie Diallo, Ibrahim Touré..."
+                                                                         required></textarea>
+                                                                <small class="form-text text-muted">
+                                                                    Précisez exactement le ou les noms à graver
+                                                                </small>
+                                                            </div>
+                                                        {% endif %}
+
+                                                        {% if 'date' in option.nom|lower %}
+                                                            <div class="mb-3">
+                                                                <label class="form-label">
+                                                                    Quelle date graver ? <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="text"
+                                                                       name="precision_{{ produit.pack.id }}_{{ option.id }}_date_a_graver"
+                                                                       class="form-control"
+                                                                       placeholder="Ex: 15/06/2024"
+                                                                       required>
+                                                                <small class="form-text text-muted">
+                                                                    Format recommandé: JJ/MM/AAAA
+                                                                </small>
+                                                            </div>
+                                                        {% endif %}
+
+                                                        {% if 'mot' in option.nom|lower or 'message' in option.nom|lower %}
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Votre mot doux</label>
+                                                                <input type="text"
+                                                                       name="precision_{{ produit.pack.id }}_{{ option.id }}_mot_doux"
+                                                                       class="form-control"
+                                                                       maxlength="100"
+                                                                       placeholder="Votre message personnalisé...">
+                                                                <small class="form-text text-muted">
+                                                                    Maximum 100 caractères
+                                                                </small>
+                                                            </div>
+                                                            <div class="form-check mb-3">
+                                                                <input type="checkbox"
+                                                                       name="precision_{{ produit.pack.id }}_{{ option.id }}_laisser_choisir_mot_doux"
+                                                                       class="form-check-input"
+                                                                       id="surprise_{{ produit.pack.id }}_{{ option.id }}">
+                                                                <label class="form-check-label" for="surprise_{{ produit.pack.id }}_{{ option.id }}">
+                                                                    Laissez-nous vous surprendre avec un mot doux
+                                                                </label>
+                                                            </div>
+                                                        {% endif %}
+
+                                                    {% elif 'couleur' in option.nom|lower %}
+                                                        <div class="mb-3">
+                                                            <label class="form-label">
+                                                                Quelle couleur préférez-vous ? <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="text"
+                                                                   name="precision_{{ produit.pack.id }}_{{ option.id }}_couleur_preference"
+                                                                   class="form-control"
+                                                                   placeholder="Ex: Rouge, Bleu, Doré..."
+                                                                   required>
+                                                        </div>
+
+                                                    {% elif 'taille' in option.nom|lower %}
+                                                        <div class="mb-3">
+                                                            <label class="form-label">
+                                                                Quelle taille souhaitez-vous ? <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="text"
+                                                                   name="precision_{{ produit.pack.id }}_{{ option.id }}_taille_preference"
+                                                                   class="form-control"
+                                                                   placeholder="Ex: S, M, L, XL ou dimensions spécifiques"
+                                                                   required>
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                    <!-- Instructions spéciales (toujours disponible) -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Instructions spéciales (optionnel)</label>
+                                                        <textarea name="precision_{{ produit.pack.id }}_{{ option.id }}_instructions_speciales"
+                                                                 class="form-control"
+                                                                 rows="2"
+                                                                 placeholder="Toute autre précision importante..."></textarea>
+                                                    </div>
+                                                </div>
+
+                                                {% if not forloop.last %}
+                                                    <hr class="my-3">
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            {{ form.notes|as_crispy_field }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-check me-2"></i>Confirmer la commande
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Résumé de la commande -->
+        <div class="col-lg-4">
+            <div class="card cart-summary">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Résumé de la commande</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in panier.get_produits %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{{ item.pack.nom }} x{{ item.quantite }}</span>
+                            <span class="fw-bold">{{ item.prix_total }} FCFA</span>
+                        </div>
+                        {% if item.options_details %}
+                            <div class="mb-2 ps-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-cog me-1"></i>
+                                    Options:
+                                    {% for option in item.options_details %}
+                                        {{ option.nom }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </small>
+                            </div>
+                        {% endif %}
+                        {% if not forloop.last %}
+                            <hr class="my-2">
+                        {% endif %}
+                    {% endfor %}
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total :</span>
+                        <span class="fw-bold">{{ panier.get_total }} FCFA</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Livraison :</span>
+                        <span class="fw-bold">Offerte</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Total à payer :</span>
+                        <span class="fw-bold fs-5">{{ panier.get_total }} FCFA</span>
+                    </div>
+
+                    <div class="alert alert-info mb-0">
+                        <h6 class="mb-1"><i class="fas fa-info-circle me-2"></i>Important :</h6>
+                        <p class="mb-0">Le paiement se fait uniquement à la livraison. Vous pourrez payer en espèces, via Orange Money ou Wave lors de la réception de votre commande.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.personnalisation-card {
+    border: 2px solid var(--color-secondary);
+    transition: all 0.3s ease;
+}
+
+.personnalisation-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(194, 124, 74, 0.1);
+}
+
+.option-precision {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-primary);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(194, 124, 74, 0.3);
+}
+
+@media (max-width: 768px) {
+    .option-precision {
+        padding: 15px;
+    }
+
+    .personnalisation-card .card-body {
+        padding: 15px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des cases à cocher "Laissez-nous choisir"
+    document.querySelectorAll('input[type="checkbox"][name*="laisser_choisir_mot_doux"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            // Trouver le champ de saisie du mot doux correspondant
+            const motDouxInput = this.closest('.option-precision').querySelector('input[name*="mot_doux"]:not([type="checkbox"])');
+            if (motDouxInput) {
+                if (this.checked) {
+                    motDouxInput.disabled = true;
+                    motDouxInput.value = '';
+                    motDouxInput.placeholder = 'Nous choisirons un mot doux pour vous';
+                } else {
+                    motDouxInput.disabled = false;
+                    motDouxInput.placeholder = 'Votre message personnalisé...';
+                }
+            }
+        });
+    });
+
+    // Validation du formulaire
+    document.getElementById('commandeForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        const requiredFields = this.querySelectorAll('input[required], textarea[required]');
+
+        requiredFields.forEach(function(field) {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('is-invalid');
+
+                // Ajouter un message d'erreur si pas déjà présent
+                if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'invalid-feedback';
+                    errorDiv.textContent = 'Ce champ est obligatoire.';
+                    field.parentNode.insertBefore(errorDiv, field.nextSibling);
+                }
+            } else {
+                field.classList.remove('is-invalid');
+                // Supprimer le message d'erreur
+                const errorDiv = field.nextElementSibling;
+                if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                    errorDiv.remove();
+                }
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Veuillez remplir tous les champs obligatoires marqués d\'un astérisque (*).');
+
+            // Faire défiler vers le premier champ invalide
+            const firstInvalid = this.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

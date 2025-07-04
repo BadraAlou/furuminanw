@@ -1,0 +1,994 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="hero-section mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3">{{ titre }}</h1>
+                <p class="lead text-muted">
+                    Découvrez les témoignages authentiques de nos clientes qui ont fait confiance à Furu Minanw
+                    pour leur trousseau de mariage. Chaque avis reflète notre engagement envers l'excellence
+                    et l'artisanat malien traditionnel.
+                </p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="stats-card">
+                    <div class="stat-number">{{ avis_clients.count }}</div>
+                    <div class="stat-label">Avis vérifiés</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if avis_clients %}
+        <!-- Filtres et tri -->
+        <div class="filters-section mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-star me-2"></i>Tous les avis
+                        </button>
+                        <button class="filter-btn" data-filter="5">
+                            <i class="fas fa-star me-2"></i>5 étoiles
+                        </button>
+                        <button class="filter-btn" data-filter="4">
+                            <i class="fas fa-star me-2"></i>4 étoiles
+                        </button>
+                        <button class="filter-btn" data-filter="photos">
+                            <i class="fas fa-camera me-2"></i>Avec photos
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="sort-controls">
+                        <select id="sortSelect" class="form-select">
+                            <option value="recent">Plus récents</option>
+                            <option value="ancien">Plus anciens</option>
+                            <option value="note-desc">Meilleures notes</option>
+                            <option value="note-asc">Notes croissantes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grille des avis -->
+        <div class="avis-grid" id="avisGrid">
+            {% for avis in avis_clients %}
+                <div class="avis-card"
+                     data-note="{{ avis.note }}"
+                     data-date="{{ avis.date_creation|date:'Y-m-d' }}"
+                     data-photos="{% if avis.photos.exists %}true{% else %}false{% endif %}">
+
+                    <!-- En-tête de l'avis -->
+                    <div class="avis-header">
+                        <div class="client-info">
+                            <div class="client-avatar">
+                                {% if avis.client.profil.photo_profil %}
+                                    <img src="{{ avis.client.profil.photo_profil.url }}"
+                                         alt="Photo de {{ avis.client.profil.get_nom_affichage }}"
+                                         class="avatar-img">
+                                {% else %}
+                                    <div class="avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="client-details">
+                                <h6 class="client-name">{{ avis.client.profil.get_nom_affichage }}</h6>
+                                <div class="client-meta">
+                                    <span class="marriage-date">
+                                        <i class="fas fa-heart me-1"></i>
+                                        Mariée le {{ avis.date_mariage|date:"d/m/Y" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="avis-badge">
+                            <span class="verified-badge">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Avis vérifié
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Note et titre -->
+                    <div class="avis-rating mb-3">
+                        <div class="stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avis.note %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-text">({{ avis.note }}/5)</span>
+                        <span class="date-text">{{ avis.date_creation|date:"M Y" }}</span>
+                    </div>
+
+                    <h5 class="avis-title">{{ avis.titre }}</h5>
+
+                    <!-- Contenu de l'avis -->
+                    <div class="avis-content">
+                        <p class="avis-text">{{ avis.contenu }}</p>
+                    </div>
+
+                    <!-- Photos si disponibles -->
+                    {% if avis.photos.exists %}
+                        <div class="avis-photos">
+                            <div class="photos-grid">
+                                {% for photo in avis.photos.all %}
+                                    <div class="photo-item">
+                                        <img src="{{ photo.image.url }}"
+                                             alt="{{ photo.legende|default:'Photo de mariage' }}"
+                                              class="photo-thumbnail"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#photoModal{{ avis.id }}_{{ photo.id }}">
+                                    </div>
+
+                                    <!-- Modal pour agrandir la photo -->
+                                    <div class="modal fade photo-modal" id="photoModal{{ avis.id }}_{{ photo.id }}" tabindex="-1" aria-labelledby="photoModalLabel{{ avis.id }}_{{ photo.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-xl modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="photoModalLabel{{ avis.id }}_{{ photo.id }}">
+                                                        {% if photo.legende %}{{ photo.legende }}{% else %}Photo de mariage{% endif %}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                                </div>
+                                                <div class="modal-body text-center p-0">
+                                                    <div class="photo-container">
+                                                        <img src="{{ photo.image.url }}"
+                                                             alt="{{ photo.legende|default:'Photo de mariage' }}"
+                                                             class="img-fluid photo-full">
+                                                    </div>
+                                                    {% if photo.legende %}
+                                                        <div class="photo-caption">
+                                                            <p>{{ photo.legende }}</p>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="photo-navigation">
+                                                        {% if not forloop.first %}
+                                                            {% with prev_photos=avis.photos.all %}
+                                                                {% with prev_index=forloop.counter0|add:"-1" %}
+                                                                    {% with prev_photo=prev_photos|slice:prev_index|first %}
+                                                                        <button type="button" class="btn btn-outline-primary prev-photo" data-current-modal="#photoModal{{ avis.id }}_{{ photo.id }}" data-prev-modal="#photoModal{{ avis.id }}_{{ prev_photo.id }}">
+                                                                            <i class="fas fa-chevron-left me-2"></i>Précédente
+                                                                        </button>
+                                                                    {% endwith %}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        {% endif %}
+
+                                                        <span class="photo-counter">{{ forloop.counter }}/{{ avis.photos.count }}</span>
+
+                                                        {% if not forloop.last %}
+                                                            {% with next_photos=avis.photos.all %}
+                                                                {% with next_index=forloop.counter0|add:"1" %}
+                                                                    {% with next_photo=next_photos|slice:next_index|first %}
+                                                                        <button type="button" class="btn btn-outline-primary next-photo" data-current-modal="#photoModal{{ avis.id }}_{{ photo.id }}" data-next-modal="#photoModal{{ avis.id }}_{{ next_photo.id }}">
+                                                                            Suivante<i class="fas fa-chevron-right ms-2"></i>
+                                                                        </button>
+                                                                    {% endwith %}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Actions -->
+                    <div class="avis-actions">
+                        <button class="action-btn helpful-btn" data-avis-id="{{ avis.id }}">
+                            <i class="fas fa-thumbs-up me-1"></i>
+                            Utile
+                        </button>
+                        <button class="action-btn share-btn" data-avis-id="{{ avis.id }}">
+                            <i class="fas fa-share me-1"></i>
+                            Partager
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination si nécessaire -->
+        <div class="pagination-section mt-5">
+            <nav aria-label="Navigation des avis">
+                <ul class="pagination justify-content-center">
+                    <!-- Pagination sera ajoutée ici si nécessaire -->
+                </ul>
+            </nav>
+        </div>
+
+    {% else %}
+        <!-- État vide -->
+        <div class="empty-state">
+            <div class="text-center py-5">
+                <i class="fas fa-star fa-4x text-muted mb-4"></i>
+                <h3>Aucun avis pour le moment</h3>
+                <p class="text-muted mb-4">
+                    Soyez la première à partager votre expérience avec Furu Minanw !
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'utilisateurs:ajouter_avis' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Écrire un avis
+                    </a>
+                {% else %}
+                    <a href="{% url 'utilisateurs:inscription' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Créer un compte pour laisser un avis
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Section CTA -->
+    <div class="cta-section mt-5">
+        <div class="cta-card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h3>Vous aussi, partagez votre expérience !</h3>
+                    <p class="mb-0">
+                        Aidez d'autres futures mariées en partageant votre avis sur votre trousseau Furu Minanw.
+                        Votre témoignage compte et inspire notre communauté.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    {% if user.is_authenticated %}
+                        {% if user.profil.peut_laisser_avis %}
+                            <a href="{% url 'utilisateurs:ajouter_avis' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-star me-2"></i>Écrire mon avis
+                            </a>
+                        {% else %}
+                            <a href="{% url 'utilisateurs:profil' %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-user-edit me-2"></i>Compléter mon profil
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'utilisateurs:inscription' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Créer un compte
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.stats-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+/* Filtres */
+.filters-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--color-secondary);
+    background: white;
+    color: var(--color-text);
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.sort-controls select {
+    border-radius: 10px;
+    border: 2px solid var(--color-secondary);
+    padding: 0.5rem 1rem;
+}
+
+/* Grille des avis */
+.avis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.avis-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.avis-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    border-color: var(--color-primary);
+}
+
+/* En-tête de l'avis */
+.avis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.client-avatar {
+    position: relative;
+}
+
+.avatar-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-primary);
+}
+
+.avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    border: 3px solid var(--color-primary);
+}
+
+.client-name {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.client-meta {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.marriage-date {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.verified-badge {
+    background: #e8f5e8;
+    color: #2e7d32;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Rating */
+.avis-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.stars i {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.rating-text {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.date-text {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Titre et contenu */
+.avis-title {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.avis-content {
+    margin-bottom: 1.5rem;
+}
+
+.avis-text {
+    color: var(--color-text);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Photos */
+.avis-photos {
+    margin-bottom: 1.5rem;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+    max-width: 300px;
+}
+
+.photo-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.photo-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.photo-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.photo-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+/* Styles pour la modal de photo */
+.photo-modal .modal-content {
+    background-color: rgba(0, 0, 0, 0.9);
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.photo-modal .modal-header {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+}
+
+.photo-modal .modal-title {
+    color: white;
+    font-weight: 500;
+}
+
+.photo-modal .btn-close {
+    color: white;
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    opacity: 0.8;
+}
+
+.photo-modal .btn-close:hover {
+    opacity: 1;
+}
+
+.photo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    max-height: 80vh;
+    overflow: hidden;
+    background-color: black;
+}
+
+.photo-full {
+    max-height: 80vh;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.photo-caption {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.photo-caption p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.photo-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.photo-counter {
+    color: white;
+    font-size: 0.9rem;
+    padding: 0 15px;
+}
+
+.modal-footer {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prev-photo, .next-photo {
+    background-color: transparent;
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.prev-photo:hover, .next-photo:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Actions */
+.avis-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-secondary);
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid var(--color-secondary);
+    color: var(--color-text);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* CTA Section */
+.cta-section {
+    margin-top: 4rem;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #a66a3d 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.cta-card h3 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.cta-card .btn {
+    background: white;
+    color: var(--color-primary);
+    border: none;
+    font-weight: 600;
+}
+
+.cta-card .btn:hover {
+    background: var(--color-accent);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* État vide */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--color-accent);
+    border-radius: 20px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .avis-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .avis-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .avis-card {
+        padding: 1.5rem;
+    }
+
+    .filter-buttons {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .hero-section {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+
+    .stats-card {
+        margin-top: 2rem;
+    }
+
+    .cta-card {
+        padding: 2rem 1rem;
+    }
+
+    .cta-card .row {
+        text-align: center;
+    }
+
+    .cta-card .col-lg-4 {
+        margin-top: 1.5rem;
+    }
+
+    .photo-modal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .photo-navigation {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .photo-counter {
+        order: -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .avis-card {
+        padding: 1.2rem;
+    }
+
+    .avis-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .client-info {
+        width: 100%;
+    }
+
+    .avis-badge {
+        align-self: flex-start;
+    }
+
+    .photos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .photo-item {
+        aspect-ratio: 1;
+    }
+
+    .photo-container {
+        min-height: 200px;
+    }
+
+    .photo-navigation button {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.avis-card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.avis-card:nth-child(even) {
+    animation-delay: 0.1s;
+}
+
+.avis-card:nth-child(3n) {
+    animation-delay: 0.2s;
+}
+
+/* Filtres actifs */
+.avis-card.hidden {
+    display: none;
+}
+
+.avis-card.show {
+    display: block;
+}
+
+/* Zoom sur les photos */
+.photo-zoom-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-zoom {
+    transition: transform 0.5s ease;
+    cursor: zoom-in;
+}
+
+.photo-zoom.zoomed {
+    transform: scale(1.5);
+    cursor: zoom-out;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const sortSelect = document.getElementById('sortSelect');
+    const avisCards = document.querySelectorAll('.avis-card');
+
+    // Gestion des filtres
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Mettre à jour les boutons actifs
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.dataset.filter;
+
+            avisCards.forEach(card => {
+                let show = true;
+
+                if (filter === 'all') {
+                    show = true;
+                } else if (filter === 'photos') {
+                    show = card.dataset.photos === 'true';
+                } else {
+                    show = card.dataset.note === filter;
+                }
+
+                if (show) {
+                    card.classList.remove('hidden');
+                    card.classList.add('show');
+                } else {
+                    card.classList.add('hidden');
+                    card.classList.remove('show');
+                }
+            });
+        });
+    });
+
+    // Gestion du tri
+    sortSelect.addEventListener('change', function() {
+        const sortValue = this.value;
+        const grid = document.getElementById('avisGrid');
+        const cards = Array.from(avisCards);
+
+        cards.sort((a, b) => {
+            switch(sortValue) {
+                case 'recent':
+                    return new Date(b.dataset.date) - new Date(a.dataset.date);
+                case 'ancien':
+                    return new Date(a.dataset.date) - new Date(b.dataset.date);
+                case 'note-desc':
+                    return parseInt(b.dataset.note) - parseInt(a.dataset.note);
+                case 'note-asc':
+                    return parseInt(a.dataset.note) - parseInt(b.dataset.note);
+                default:
+                    return 0;
+            }
+        });
+
+        // Réorganiser les cartes
+        cards.forEach(card => grid.appendChild(card));
+    });
+
+    // Gestion des actions (utile, partager)
+    document.querySelectorAll('.helpful-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            if (this.classList.contains('active')) {
+                icon.className = 'fas fa-thumbs-up me-1';
+                this.style.background = 'var(--color-primary)';
+                this.style.color = 'white';
+            } else {
+                icon.className = 'far fa-thumbs-up me-1';
+                this.style.background = 'none';
+                this.style.color = 'var(--color-text)';
+            }
+        });
+    });
+
+    document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const avisId = this.dataset.avisId;
+            const url = window.location.href + '#avis-' + avisId;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Avis client Furu Minanw',
+                    text: 'Découvrez cet avis sur Furu Minanw',
+                    url: url
+                });
+            } else {
+                // Fallback: copier dans le presse-papier
+                navigator.clipboard.writeText(url).then(() => {
+                    // Feedback visuel
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>Copié !';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        });
+    });
+
+    // Gestion des photos modales
+    document.querySelectorAll('.prev-photo, .next-photo').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const currentModal = this.dataset.currentModal;
+            const targetModal = this.classList.contains('prev-photo')
+                ? this.dataset.prevModal
+                : this.dataset.nextModal;
+
+            // Fermer la modal actuelle
+            const currentModalEl = document.querySelector(currentModal);
+            const currentModalInstance = bootstrap.Modal.getInstance(currentModalEl);
+            currentModalInstance.hide();
+
+            // Ouvrir la modal cible après un court délai
+            setTimeout(() => {
+                const targetModalEl = document.querySelector(targetModal);
+                const targetModalInstance = new bootstrap.Modal(targetModalEl);
+                targetModalInstance.show();
+            }, 500);
+        });
+    });
+
+    // Zoom sur les photos dans la modal
+    document.querySelectorAll('.photo-full').forEach(img => {
+        img.addEventListener('click', function() {
+            this.classList.toggle('zoomed');
+
+            // Ajuster le conteneur pour le zoom
+            const container = this.closest('.photo-container');
+            if (this.classList.contains('zoomed')) {
+                container.style.overflow = 'auto';
+            } else {
+                container.style.overflow = 'hidden';
+            }
+        });
+    });
+
+    // Animation au scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    avisCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
+
+    // Gestion des touches clavier pour la navigation dans les photos
+    document.addEventListener('keydown', function(e) {
+        const activeModal = document.querySelector('.photo-modal.show');
+        if (activeModal) {
+            if (e.key === 'ArrowLeft') {
+                const prevBtn = activeModal.querySelector('.prev-photo');
+                if (prevBtn) prevBtn.click();
+            } else if (e.key === 'ArrowRight') {
+                const nextBtn = activeModal.querySelector('.next-photo');
+                if (nextBtn) nextBtn.click();
+            } else if (e.key === 'Escape') {
+                const closeBtn = activeModal.querySelector('.btn-close');
+                if (closeBtn) closeBtn.click();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,369 @@
+<!-- furu_minanw/templates/pages/faq.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+
+    <div class="row">
+        <!-- Section FAQ principale -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-4">Questions fréquentes</h2>
+
+                    <!-- Commandes et livraisons -->
+                    <h4 class="mb-3">Commandes et livraisons</h4>
+                    <div class="accordion mb-4" id="commandesAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#commande1">
+                                    Comment passer une commande sur votre site ?
+                                </button>
+                            </h2>
+                            <div id="commande1" class="accordion-collapse collapse show" data-bs-parent="#commandesAccordion">
+                                <div class="accordion-body">
+                                    <p>Pour passer une commande sur notre site, suivez ces étapes simples :</p>
+                                    <ol>
+                                        <li>Créez un compte ou connectez-vous si vous en avez déjà un</li>
+                                        <li>Parcourez notre catalogue et sélectionnez le pack trousseau qui vous convient</li>
+                                        <li>Personnalisez votre pack selon vos préférences</li>
+                                        <li>Ajoutez le pack à votre panier</li>
+                                        <li>Validez votre panier et complétez les informations de livraison</li>
+                                        <li>Confirmez votre commande</li>
+                                    </ol>
+                                    <p>Vous recevrez alors un email de confirmation avec les détails de votre commande.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#commande2">
+                                    Quels sont les délais de livraison ?
+                                </button>
+                            </h2>
+                            <div id="commande2" class="accordion-collapse collapse" data-bs-parent="#commandesAccordion">
+                                <div class="accordion-body">
+                                    <p>Les délais de livraison dépendent de votre localisation :</p>
+                                    <ul>
+                                        <li>Bamako centre : 3-5 jours ouvrés</li>
+                                        <li>Bamako périphérie : 4-7 jours ouvrés</li>
+                                        <li>Koulikoro, Kati : 5-10 jours ouvrés</li>
+                                        <li>Autres régions du Mali : 7-15 jours ouvrés</li>
+                                    </ul>
+                                    <p>Pour les packs très personnalisés, un délai supplémentaire peut être nécessaire.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#commande3">
+                                    Comment se déroule le paiement à la livraison ?
+                                </button>
+                            </h2>
+                            <div id="commande3" class="accordion-collapse collapse" data-bs-parent="#commandesAccordion">
+                                <div class="accordion-body">
+                                    <p>Notre système de paiement à la livraison est simple et sécurisé :</p>
+                                    <ol>
+                                        <li>Le livreur vous présente votre commande</li>
+                                        <li>Vous vérifiez que tous les articles correspondent à votre commande</li>
+                                        <li>Vous effectuez le paiement par l'un des moyens suivants :
+                                            <ul>
+                                                <li>Espèces</li>
+                                                <li>Orange Money</li>
+                                                <li>Wave</li>
+                                            </ul>
+                                        </li>
+                                        <li>Un reçu vous est remis comme preuve de paiement</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Produits et personnalisation -->
+                    <h4 class="mb-3">Produits et personnalisation</h4>
+                    <div class="accordion mb-4" id="produitsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#produit1">
+                                    Quelle est la différence entre les packs Standard, Prestige et Luxe ?
+                                </button>
+                            </h2>
+                            <div id="produit1" class="accordion-collapse collapse" data-bs-parent="#produitsAccordion">
+                                <div class="accordion-body">
+                                    <p>Nos trois packs se distinguent par leur contenu et leur niveau de finition :</p>
+                                    <ul>
+                                        <li><strong>Pack Standard</strong> : Les essentiels du trousseau à un prix accessible</li>
+                                        <li><strong>Pack Prestige</strong> : Plus de choix et une meilleure qualité de matériaux</li>
+                                        <li><strong>Pack Luxe</strong> : Notre offre haut de gamme avec des pièces uniques</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#produit2">
+                                    Comment personnaliser mon trousseau ?
+                                </button>
+                            </h2>
+                            <div id="produit2" class="accordion-collapse collapse" data-bs-parent="#produitsAccordion">
+                                <div class="accordion-body">
+                                    <p>Vous pouvez personnaliser votre trousseau de plusieurs façons :</p>
+                                    <ul>
+                                        <li>Choix des couleurs</li>
+                                        <li>Sélection des matières</li>
+                                        <li>Ajout de motifs traditionnels</li>
+                                        <li>Options supplémentaires selon le pack</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#produit3">
+                                    Les produits sont-ils vraiment faits main par des artisans locaux ?
+                                </button>
+                            </h2>
+                            <div id="produit3" class="accordion-collapse collapse" data-bs-parent="#produitsAccordion">
+                                <div class="accordion-body">
+                                    <p>Oui, absolument ! Nous collaborons avec des artisans maliens qualifiés qui fabriquent chaque pièce à la main. Cela inclut :</p>
+                                    <ul>
+                                        <li>Le tissage traditionnel</li>
+                                        <li>La broderie</li>
+                                        <li>Le travail du cuir</li>
+                                        <li>La poterie</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compte et service client -->
+                    <h4 class="mb-3">Compte et service client</h4>
+                    <div class="accordion mb-4" id="compteAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compte1">
+                                    Comment créer un compte ?
+                                </button>
+                            </h2>
+                            <div id="compte1" class="accordion-collapse collapse" data-bs-parent="#compteAccordion">
+                                <div class="accordion-body">
+                                    <p>Pour créer votre compte :</p>
+                                    <ol>
+                                        <li>Cliquez sur "Inscription" en haut à droite</li>
+                                        <li>Remplissez le formulaire avec vos informations</li>
+                                        <li>Validez votre inscription</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compte2">
+                                    Comment contacter le service client ?
+                                </button>
+                            </h2>
+                            <div id="compte2" class="accordion-collapse collapse" data-bs-parent="#compteAccordion">
+                                <div class="accordion-body">
+                                    <p>Plusieurs options s'offrent à vous :</p>
+                                    <ul>
+                                        <li>Par téléphone : <a href="{{ COMPANY_PHONE_LINK }}" class="text-decoration-none">{{ COMPANY_PHONE }}</a></li>
+                                        <li>Par email : <a href="mailto:{{ COMPANY_EMAIL }}" class="text-decoration-none">{{ COMPANY_EMAIL }}</a></li>
+                                        <li>Via notre formulaire de contact</li>
+                                        <li>Rendez-vous à notre boutique : <a href="{{ COMPANY_MAPS_URL }}" target="_blank" class="text-decoration-none">{{ COMPANY_ADDRESS }}, {{ COMPANY_CITY }}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compte3">
+                                    Que faire en cas de problème avec ma commande ?
+                                </button>
+                            </h2>
+                            <div id="compte3" class="accordion-collapse collapse" data-bs-parent="#compteAccordion">
+                                <div class="accordion-body">
+                                    <p>En cas de problème :</p>
+                                    <ol>
+                                        <li>Contactez immédiatement notre service client</li>
+                                        <li>Fournissez votre numéro de commande</li>
+                                        <li>Expliquez clairement le problème rencontré</li>
+                                        <li>Notre équipe vous apportera une solution rapide</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Contact Box -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Vous ne trouvez pas votre réponse ?</h3>
+                    <p>Notre équipe est à votre disposition pour répondre à toutes vos questions.</p>
+
+                    <div class="contact-methods mb-3">
+                        <div class="mb-2">
+                            <a href="{{ COMPANY_PHONE_LINK }}" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-phone me-2"></i>{{ COMPANY_PHONE }}
+                            </a>
+                        </div>
+                        <div class="mb-2">
+                            <a href="mailto:{{ COMPANY_EMAIL }}" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>{{ COMPANY_EMAIL }}
+                            </a>
+                        </div>
+                        <div class="mb-2">
+                            <a href="{{ COMPANY_MAPS_URL }}" target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-map-marker-alt me-2"></i>Nous rendre visite
+                            </a>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'pages:contact' %}" class="btn btn-primary w-100">
+                        <i class="fas fa-envelope me-2"></i>Formulaire de contact
+                    </a>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Paiement à la livraison</h3>
+                    <div class="alert alert-info">
+                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Important :</h6>
+                        <p class="mb-0">Le paiement se fait uniquement à la livraison. Vous pourrez payer en espèces, via Orange Money ou Wave lors de la réception de votre commande.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engagements -->
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Nos engagements</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                </div>
+                                <div>
+                                    <strong>Artisanat authentique</strong>
+                                    <p class="mb-0 text-muted">Produits 100% faits main par des artisans maliens</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                </div>
+                                <div>
+                                    <strong>Qualité garantie</strong>
+                                    <p class="mb-0 text-muted">Vérification rigoureuse de chaque produit</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                </div>
+                                <div>
+                                    <strong>Commerce équitable</strong>
+                                    <p class="mb-0 text-muted">Rémunération juste pour nos artisans partenaires</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.accordion-item {
+    border: 1px solid var(--color-secondary);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.accordion-button {
+    background-color: white;
+    color: var(--color-text);
+    font-weight: 500;
+    padding: 1.25rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--color-secondary);
+}
+
+.accordion-body {
+    padding: 1.25rem;
+    background-color: white;
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.contact-methods .btn {
+    transition: all 0.3s ease;
+}
+
+.contact-methods .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}

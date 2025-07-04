@@ -1,0 +1,74 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Rappel: Suppression de compte dans {{ jours_restants }} jours - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Rappel de suppression de compte</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">{{ jours_restants }} jour{{ jours_restants|pluralize }} restant{{ jours_restants|pluralize }}</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ nom_prenom }}</strong>,</p>
+
+<p>Nous vous rappelons que votre compte Furu Minanw sera définitivement supprimé dans <strong>{{ jours_restants }} jour{{ jours_restants|pluralize }}</strong>, le <strong>{{ date_suppression|date:"d/m/Y" }}</strong>.</p>
+
+<div class="alert-box alert-warning">
+    <h4 style="margin-top: 0; color: #f57c00;"><i style="margin-right: 8px;">⚠️</i> Action requise</h4>
+    <p style="margin: 0;">Si vous souhaitez conserver votre compte, vous devez annuler la demande de suppression avant le {{ date_suppression|date:"d/m/Y" }}. Après cette date, la suppression sera définitive et irréversible.</p>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+    <div style="display: inline-block; padding: 20px; background-color: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+        <div style="font-size: 48px; font-weight: bold; color: #f57c00; margin-bottom: 10px;">{{ jours_restants }}</div>
+        <div style="font-size: 18px; color: #f57c00;">Jour{{ jours_restants|pluralize }} restant{{ jours_restants|pluralize }}</div>
+    </div>
+</div>
+
+<div class="alert-box alert-danger">
+    <h4 style="margin-top: 0; color: #d32f2f;"><i style="margin-right: 8px;">🔄</i> Vous voulez garder votre compte ?</h4>
+    <p>Cliquez sur le bouton ci-dessous pour annuler immédiatement la suppression de votre compte :</p>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{{ annulation_url }}" class="btn">Annuler la suppression</a>
+    </div>
+    
+    <p style="margin: 0;">Cette action réactivera immédiatement votre compte et annulera définitivement la demande de suppression.</p>
+</div>
+
+<div class="info-section">
+    <h3>Ce qui sera supprimé le {{ date_suppression|date:"d/m/Y" }}</h3>
+    <ul style="margin: 0; padding-left: 20px;">
+        <li>Toutes vos informations personnelles</li>
+        <li>Votre accès au compte</li>
+        <li>Vos préférences et favoris</li>
+        <li>Votre historique de navigation</li>
+    </ul>
+    
+    <h4 style="margin-top: 20px;">Ce qui sera conservé (anonymisé)</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+        <li>Vos commandes (pour nos obligations légales)</li>
+        <li>Les données comptables et factures</li>
+    </ul>
+</div>
+
+{% if jours_restants <= 3 %}
+<div class="alert-box alert-danger">
+    <h4 style="margin-top: 0; color: #d32f2f;"><i style="margin-right: 8px;">🚨</i> Derniers jours !</h4>
+    <p style="margin: 0;">Il ne vous reste que {{ jours_restants }} jour{{ jours_restants|pluralize }} pour changer d'avis. Après le {{ date_suppression|date:"d/m/Y" }}, il sera impossible de récupérer votre compte.</p>
+</div>
+{% endif %}
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">❓</i> Questions ?</h4>
+    <p style="margin: 0;">Si vous avez des questions concernant la suppression de votre compte ou si vous rencontrez des difficultés, notre équipe support est à votre disposition.</p>
+</div>
+
+<p style="margin-top: 30px;">
+    Nous espérons vous revoir bientôt !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ user.email }}
+{% endblock %}

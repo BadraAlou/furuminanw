@@ -1,0 +1,295 @@
+<!-- furu_minanw/templates/pages/livraison.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4 hover-card">
+                <div class="card-body">
+                    <h2 class="mb-4">Politique de livraison</h2>
+                    
+                    <h4 class="mb-3">Zones de livraison</h4>
+                    <p>Furu Minanw livre dans toutes les régions du Mali. Nos délais et frais de livraison varient selon votre localisation :</p>
+                    
+                    <div class="table-responsive mb-4">
+                        <table class="table delivery-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Zone</th>
+                                    <th>Délai estimé</th>
+                                    <th>Frais de livraison</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row">
+                                    <td>Bamako (centre-ville)</td>
+                                    <td>3-5 jours ouvrés</td>
+                                    <td class="text-success">Gratuit</td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>Bamako (périphérie)</td>
+                                    <td>4-7 jours ouvrés</td>
+                                    <td class="text-success">Gratuit</td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>Koulikoro, Kati</td>
+                                    <td>5-10 jours ouvrés</td>
+                                    <td>5 000 FCFA</td>
+                                </tr>
+                                <tr class="table-row no-border">
+                                    <td>Autres régions</td>
+                                    <td>7-15 jours ouvrés</td>
+                                    <td>10 000 - 15 000 FCFA</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="mb-3">Modalités de livraison</h4>
+                    <div class="info-section hover-effect">
+                        <p>Nos livraisons sont effectuées par notre propre équipe de livraison ou par des transporteurs partenaires de confiance. Voici comment se déroule la livraison :</p>
+                        
+                        <ol class="mb-4 feature-list">
+                            <li class="mb-2">Une fois votre commande prête, notre équipe vous contactera pour confirmer la date et l'heure de livraison.</li>
+                            <li class="mb-2">Le jour de la livraison, notre livreur vous appellera environ 30 minutes avant son arrivée.</li>
+                            <li class="mb-2">À la réception, vous pourrez vérifier que tous les articles correspondent à votre commande avant d'accepter la livraison.</li>
+                            <li class="mb-2">Le paiement s'effectue uniquement à la livraison, en espèces ou via Orange Money/Wave.</li>
+                        </ol>
+                    </div>
+                    
+                    <h4 class="mb-3">Suivi de commande</h4>
+                    <div class="info-section hover-effect">
+                        <p>Vous pouvez suivre l'état de votre commande à tout moment en vous connectant à votre compte sur notre site. Vous recevrez également des notifications par email à chaque étape du processus.</p>
+                    </div>
+                    
+                    <h4 class="mb-3">Retards de livraison</h4>
+                    <div class="info-section hover-effect">
+                        <p>En cas de retard imprévu (conditions météorologiques, problèmes de transport, etc.), nous vous informerons immédiatement et vous proposerons une nouvelle date de livraison.</p>
+                    </div>
+                    
+                    <h4 class="mb-3">Politique de retour</h4>
+                    <div class="info-section hover-effect">
+                        <p>Si vous constatez que certains articles sont endommagés ou ne correspondent pas à votre commande lors de la livraison, vous pouvez les refuser et ils seront remplacés dans les plus brefs délais, sans frais supplémentaires.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4 hover-card">
+                <div class="card-body">
+                    <h3 class="mb-3">Paiement à la livraison</h3>
+                    <div class="alert alert-info">
+                        <h5 class="mb-2"><i class="fas fa-info-circle me-2"></i> Important :</h5>
+                        <p class="mb-0">Le paiement se fait uniquement à la livraison. Vous pourrez payer en espèces, via Orange Money ou Wave lors de la réception de votre commande.</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5 class="mb-3">Moyens de paiement acceptés :</h5>
+                        <div class="payment-method hover-effect">
+                            <i class="fas fa-money-bill-wave fa-2x text-success me-3"></i>
+                            <span>Espèces</span>
+                        </div>
+                        <div class="payment-method hover-effect">
+                            <i class="fas fa-mobile-alt fa-2x text-warning me-3"></i>
+                            <span>Orange Money</span>
+                        </div>
+                        <div class="payment-method hover-effect">
+                            <i class="fas fa-exchange-alt fa-2x text-info me-3"></i>
+                            <span>Wave</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4 hover-card">
+                <div class="card-body">
+                    <h3 class="mb-3">Questions fréquentes</h3>
+                    
+                    <div class="faq-item hover-effect">
+                        <h5>Je ne serai pas disponible le jour de la livraison, que faire ?</h5>
+                        <p>Contactez-nous dès que possible pour reprogrammer la livraison à une date qui vous convient mieux.</p>
+                    </div>
+                    
+                    <div class="faq-item hover-effect">
+                        <h5>Peut-on livrer à une autre personne ?</h5>
+                        <p>Oui, vous pouvez désigner quelqu'un pour réceptionner votre commande. Il vous suffit de nous communiquer son nom et son numéro de téléphone.</p>
+                    </div>
+                    
+                    <div class="faq-item hover-effect">
+                        <h5>Les frais de livraison sont-ils remboursables ?</h5>
+                        <p>Les frais de livraison ne sont pas remboursables, sauf en cas d'erreur de notre part.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card hover-card">
+                <div class="card-body text-center">
+                    <h3 class="mb-3">Besoin d'aide ?</h3>
+                    <p>Notre équipe est à votre disposition pour répondre à toutes vos questions concernant la livraison de votre commande.</p>
+                    
+                    <div class="contact-info mb-3">
+                        <div class="mb-2">
+                            <a href="{{ COMPANY_PHONE_LINK }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-phone me-1"></i>{{ COMPANY_PHONE }}
+                            </a>
+                        </div>
+                        <div class="mb-2">
+                            <a href="mailto:{{ COMPANY_EMAIL }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-envelope me-1"></i>{{ COMPANY_EMAIL }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'pages:contact' %}" class="btn btn-primary btn-lg hover-effect">Contactez-nous</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.hover-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.hover-effect {
+    transition: all 0.3s ease;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.hover-effect:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-5px);
+}
+
+/* Styles spécifiques pour le tableau de livraison */
+.delivery-table {
+    border: none;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.delivery-table thead th {
+    border-bottom: 2px solid var(--color-primary);
+    background-color: var(--color-accent);
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 15px 12px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.delivery-table tbody td {
+    border-bottom: 1px solid #e9ecef;
+    padding: 12px;
+    vertical-align: middle;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+/* Supprimer complètement la bordure de la dernière ligne */
+.delivery-table tbody tr:last-child td,
+.delivery-table tbody tr.no-border td {
+    border-bottom: none !important;
+}
+
+/* Supprimer les bordures au survol aussi */
+.table-row {
+    transition: all 0.3s ease;
+}
+
+.table-row:hover {
+    background-color: var(--color-accent);
+    transform: scale(1.02);
+}
+
+.table-row:hover td {
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Forcer la suppression de la bordure pour la dernière ligne même au survol */
+.table-row.no-border:hover td,
+.delivery-table tbody tr:last-child:hover td {
+    border-bottom: none !important;
+}
+
+.feature-list li {
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.feature-list li:hover {
+    background-color: var(--color-accent);
+    transform: translateX(10px);
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover {
+    background-color: var(--color-accent);
+    transform: translateX(10px);
+}
+
+.faq-item {
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-5px);
+}
+
+.btn.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.info-section {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.contact-info .btn {
+    margin: 2px;
+}
+
+@media (max-width: 768px) {
+    .hover-card {
+        margin-bottom: 20px;
+    }
+    
+    .delivery-table thead th,
+    .delivery-table tbody td {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

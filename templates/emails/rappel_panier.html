@@ -1,0 +1,82 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Votre panier vous attend - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Votre panier vous attend !</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">N'oubliez pas votre trousseau de rêve</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ nom_prenom }}</strong>,</p>
+
+<p>Nous avons remarqué que vous avez ajouté des articles à votre panier mais que vous n'avez pas finalisé votre commande. Vos articles vous attendent !</p>
+
+<div class="info-section">
+    <h3>Articles dans votre panier</h3>
+    {% for item in panier_items %}
+    <div style="background-color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #C27C4A; display: flex; align-items: center;">
+        <div style="flex: 1;">
+            <h4 style="margin: 0 0 5px 0; color: #C27C4A;">{{ item.nom }}</h4>
+            <p style="margin: 0; color: #666;">{{ item.description|truncatewords:15 }}</p>
+            <p style="margin: 5px 0 0 0; font-weight: bold;">Quantité: {{ item.quantite }} - {{ item.prix }} FCFA</p>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <div style="text-align: right; padding: 15px; background-color: #f9f5f1; border-radius: 8px; margin-top: 15px;">
+        <p style="margin: 0; font-size: 18px; font-weight: bold; color: #C27C4A;">
+            Total: {{ total_panier }} FCFA
+        </p>
+    </div>
+</div>
+
+<div class="alert-box alert-warning">
+    <h4 style="margin-top: 0; color: #f57c00;"><i style="margin-right: 8px;">⏰</i> Offre limitée</h4>
+    <p style="margin: 0;">Vos articles sont réservés pour une durée limitée. Finalisez votre commande maintenant pour ne pas les perdre !</p>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="https://www.furuminanw.com/commandes/panier/" class="btn">Finaliser ma commande</a>
+</div>
+
+<h3 style="color: #C27C4A; margin-bottom: 20px;">Rappel de nos avantages :</h3>
+
+<ul class="feature-list">
+    <li>
+        <div class="feature-icon">💳</div>
+        <div class="feature-text">
+            <h4>Paiement à la livraison</h4>
+            <p>Payez uniquement à la réception de votre trousseau, en toute sécurité.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">🚚</div>
+        <div class="feature-text">
+            <h4>Livraison gratuite</h4>
+            <p>Profitez de la livraison gratuite sur Bamako et ses environs.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">🎨</div>
+        <div class="feature-text">
+            <h4>Personnalisation incluse</h4>
+            <p>Adaptez votre trousseau selon vos préférences sans frais supplémentaires.</p>
+        </div>
+    </li>
+</ul>
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">❓</i> Besoin d'aide ?</h4>
+    <p style="margin: 0;">Notre équipe est disponible pour vous conseiller dans le choix de votre trousseau. N'hésitez pas à nous contacter !</p>
+</div>
+
+<p style="margin-top: 30px;">
+    Nous espérons vous revoir bientôt !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ email }}
+{% endblock %}

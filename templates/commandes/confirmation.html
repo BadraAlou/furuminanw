@@ -1,0 +1,538 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center p-5">
+                <div class="card-body">
+                    <div class="success-animation mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success"></i>
+                        <div class="success-checkmark">
+                            <div class="check-icon">
+                                <span class="icon-line line-tip"></span>
+                                <span class="icon-line line-long"></span>
+                                <div class="icon-circle"></div>
+                                <div class="icon-fix"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h1 class="mb-4 text-success">Commande confirmée !</h1>
+                    <p class="lead mb-3">Merci pour votre confiance, {{ commande.client.first_name|default:commande.client.username }} !</p>
+
+                    <div class="order-summary-card mb-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <i class="fas fa-receipt text-primary"></i>
+                                    <div>
+                                        <strong>Numéro de commande</strong>
+                                        <p class="mb-0">#{{ commande.id }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <i class="fas fa-calendar text-primary"></i>
+                                    <div>
+                                        <strong>Date de commande</strong>
+                                        <p class="mb-0">{{ commande.date_commande|date:"d/m/Y à H:i" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                    <div>
+                                        <strong>Email de confirmation</strong>
+                                        <p class="mb-0">{{ commande.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <i class="fas fa-money-bill-wave text-primary"></i>
+                                    <div>
+                                        <strong>Mode de paiement</strong>
+                                        <p class="mb-0">{{ commande.get_methode_paiement_display }} (à la livraison)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mb-4">
+                        <h5 class="mb-2">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Prochaines étapes
+                        </h5>
+                        <div class="steps-timeline">
+                            <div class="step active">
+                                <div class="step-icon">✅</div>
+                                <div class="step-text">Commande reçue</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon">📞</div>
+                                <div class="step-text">Confirmation par téléphone</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon">🔨</div>
+                                <div class="step-text">Préparation artisanale</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon">🚚</div>
+                                <div class="step-text">Livraison à domicile</div>
+                            </div>
+                        </div>
+                        <p class="mb-0 mt-3">
+                            <strong>Notre équipe vous contactera dans les 24h</strong> pour confirmer votre commande et organiser la livraison.
+                        </p>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h4 class="mb-3">Récapitulatif de votre commande</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité</th>
+                                    <th>Prix</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for element in commande.elements.all %}
+                                    <tr>
+                                        <td>
+                                            <div class="text-start">
+                                                <strong>{{ element.pack.nom }}</strong>
+                                                {% if element.options_selectionnees.exists %}
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-cog me-1"></i>
+                                                            Options:
+                                                            {% for option in element.options_selectionnees.all %}
+                                                                {{ option.nom }}{% if not forloop.last %}, {% endif %}
+                                                            {% endfor %}
+                                                        </small>
+                                                    </div>
+                                                {% endif %}
+
+                                                <!-- Afficher les précisions de personnalisation -->
+                                                {% if element.precisions_personnalisation.exists %}
+                                                    <div class="mt-2">
+                                                        <small class="text-primary">
+                                                            <i class="fas fa-magic me-1"></i>
+                                                            <strong>Vos précisions :</strong>
+                                                        </small>
+                                                        {% for precision in element.precisions_personnalisation.all %}
+                                                            <div class="mt-1">
+                                                                <small class="text-muted">
+                                                                    <strong>{{ precision.option.nom }} :</strong>
+                                                                    {{ precision.get_resume_precisions }}
+                                                                </small>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>{{ element.quantite }}</td>
+                                        <td>{{ element.prix }} FCFA</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-success">
+                                    <th colspan="2" class="text-end">Total :</th>
+                                    <th>{{ commande.total }} FCFA</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Informations importantes sur les personnalisations -->
+                    {% if commande.elements.all|length > 0 %}
+                        {% for element in commande.elements.all %}
+                            {% if element.precisions_personnalisation.exists %}
+                                <div class="alert alert-success mt-4">
+                                    <h6 class="mb-2">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Personnalisations enregistrées
+                                    </h6>
+                                    <p class="mb-0">
+                                        Toutes vos précisions de personnalisation ont été enregistrées.
+                                        Notre équipe d'artisans réalisera votre commande exactement selon vos souhaits.
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="contact-info mt-4">
+                        <h5 class="mb-3">Besoin d'aide ?</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="tel:+22362980318" class="contact-btn">
+                                    <i class="fas fa-phone"></i>
+                                    <span>62 98 03 18</span>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="mailto:furuminanw@gmail.com" class="contact-btn">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>furuminanw@gmail.com</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'utilisateurs:historique_commandes' %}" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-list me-2"></i>Mes commandes
+                        </a>
+                        <a href="{% url 'produits:liste_packs' %}" class="btn btn-primary">
+                            <i class="fas fa-shopping-bag me-2"></i>Continuer les achats
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+}
+
+.success-animation {
+    position: relative;
+    display: inline-block;
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #4CAF50;
+    stroke-miterlimit: 10;
+    margin: 10px auto;
+    box-shadow: inset 0px 0px 0px #4CAF50;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+    position: relative;
+}
+
+.success-checkmark .check-icon {
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    border-radius: 50%;
+    background: #4CAF50;
+}
+
+.icon-line {
+    height: 2px;
+    background: white;
+    display: block;
+    border-radius: 2px;
+    position: absolute;
+    z-index: 10;
+}
+
+.icon-line.line-tip {
+    top: 19px;
+    left: 14px;
+    width: 25px;
+    transform: rotate(45deg);
+    animation: icon-line-tip .75s;
+}
+
+.icon-line.line-long {
+    top: 24px;
+    right: 8px;
+    width: 47px;
+    transform: rotate(-45deg);
+    animation: icon-line-long .75s;
+}
+
+@keyframes icon-line-tip {
+    0% { width: 0; left: 1px; top: 19px; }
+    54% { width: 0; left: 1px; top: 19px; }
+    70% { width: 50px; left: -8px; top: 37px; }
+    84% { width: 17px; left: 21px; top: 48px; }
+    100% { width: 25px; left: 14px; top: 45px; }
+}
+
+@keyframes icon-line-long {
+    0% { width: 0; right: 46px; top: 54px; }
+    65% { width: 0; right: 46px; top: 54px; }
+    84% { width: 55px; right: 0px; top: 35px; }
+    100% { width: 47px; right: 8px; top: 38px; }
+}
+
+.order-summary-card {
+    background: var(--color-accent);
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid var(--color-secondary);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.info-item i {
+    font-size: 1.5rem;
+    width: 30px;
+    text-align: center;
+}
+
+.info-item div strong {
+    display: block;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.steps-timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.steps-timeline::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #e9ecef;
+    z-index: 1;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+    background: #28a745;
+    color: white;
+    transform: scale(1.1);
+}
+
+.step-text {
+    font-size: 0.85rem;
+    text-align: center;
+    color: #666;
+    font-weight: 500;
+}
+
+.step.active .step-text {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.table {
+    margin-bottom: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th {
+    border-top: none;
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table-success th {
+    background-color: #28a745;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.contact-info {
+    background: var(--color-accent);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid var(--color-secondary);
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: white;
+    border: 2px solid var(--color-primary);
+    border-radius: 25px;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.contact-btn:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(194, 124, 74, 0.3);
+}
+
+.alert {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn {
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.text-primary {
+    color: var(--color-primary) !important;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .steps-timeline {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .steps-timeline::before {
+        display: none;
+    }
+
+    .order-summary-card {
+        padding: 15px;
+    }
+
+    .info-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .contact-btn {
+        width: 100%;
+    }
+
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+
+    .card {
+        margin: 0 10px;
+    }
+}
+
+/* Animation d'entrée */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation de confettis (optionnel)
+    function createConfetti() {
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = '-10px';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.pointerEvents = 'none';
+            confetti.style.zIndex = '9999';
+            confetti.style.borderRadius = '50%';
+
+            document.body.appendChild(confetti);
+
+            const animation = confetti.animate([
+                { transform: 'translateY(-10px) rotateZ(0deg)', opacity: 1 },
+                { transform: `translateY(100vh) rotateZ(${Math.random() * 360}deg)`, opacity: 0 }
+            ], {
+                duration: Math.random() * 2000 + 1000,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+
+            animation.onfinish = () => confetti.remove();
+        }
+    }
+
+    // Lancer les confettis après un court délai
+    setTimeout(createConfetti, 500);
+});
+</script>
+{% endblock %}

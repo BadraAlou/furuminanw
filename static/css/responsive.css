@@ -1,0 +1,549 @@
+/* ===================================
+   FURU MINANW - OPTIMISATIONS RESPONSIVE
+   ================================= */
+
+/* Optimisations pour les écrans larges */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+
+    .hero-title {
+        font-size: var(--font-size-5xl);
+    }
+
+    .hero-swiper {
+        height: 600px;
+    }
+
+    .feature-card,
+    .testimonial-card {
+        padding: var(--space-10);
+    }
+}
+
+/* Optimisations pour les écrans très larges */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1500px;
+    }
+
+    .hero {
+        padding: var(--space-24) 0;
+    }
+
+    .hero-content {
+        max-width: 700px;
+    }
+
+    .hero-swiper {
+        height: 700px;
+    }
+}
+
+/* Optimisations pour les tablettes et petits écrans */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 960px;
+    }
+
+    .hero-title {
+        font-size: var(--font-size-4xl);
+    }
+
+    .hero-swiper {
+        height: 450px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        max-width: 720px;
+    }
+
+    .col-md-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-bottom: var(--space-6);
+    }
+
+    .col-lg-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .hero {
+        padding: var(--space-16) 0;
+        min-height: auto;
+    }
+
+    .hero-content {
+        margin-bottom: var(--space-8);
+    }
+
+    .hero-swiper {
+        height: 400px;
+    }
+
+    .feature-card {
+        padding: var(--space-6);
+    }
+
+    .testimonial-card {
+        min-height: 380px;
+        max-height: 480px;
+    }
+
+    /* Ajustements pour les pages produits */
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Ajustements pour le panier */
+    .cart-summary {
+        margin-top: var(--space-6);
+    }
+}
+
+/* Optimisations pour les mobiles */
+@media (max-width: 768px) {
+    .container {
+        max-width: 540px;
+        padding: 0 var(--space-3);
+    }
+
+    .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .hero {
+        padding: var(--space-12) 0;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .hero-description {
+        font-size: var(--font-size-base);
+    }
+
+    .hero-swiper {
+        height: 350px;
+        margin-top: var(--space-6);
+    }
+
+    .features,
+    .testimonials,
+    .cta {
+        padding: var(--space-12) 0;
+    }
+
+    .testimonial-card {
+        min-height: 350px;
+        max-height: 450px;
+        padding: var(--space-6);
+    }
+
+    .client-header .d-flex {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-3);
+    }
+
+    .client-photo,
+    .client-photo-placeholder {
+        margin: 0 auto;
+    }
+
+    .verified-badge {
+        flex-direction: column;
+        gap: var(--space-2);
+        text-align: center;
+    }
+
+    .row {
+        margin: 0 calc(-1 * var(--space-2));
+    }
+
+    .col,
+    .col-md-4,
+    .col-lg-6 {
+        padding: 0 var(--space-2);
+    }
+
+    .btn {
+        padding: var(--space-3) var(--space-5);
+    }
+
+    .btn-lg {
+        padding: var(--space-3) var(--space-6);
+    }
+
+    /* Ajustements pour la navigation mobile */
+    .navbar-brand img {
+        height: 40px;
+    }
+
+    .navbar-toggler {
+        padding: 8px;
+        border: none;
+        margin-left: auto;
+    }
+
+    .navbar-collapse {
+        background-color: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        padding: var(--space-4);
+        margin-top: var(--space-2);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+
+    .navbar-nav .nav-item {
+        margin-bottom: var(--space-2);
+    }
+
+    .dropdown-menu {
+        border: none;
+        box-shadow: var(--shadow-md);
+        border-radius: var(--radius-lg);
+    }
+
+    /* Ajustements pour les pages produits */
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+
+    .product-detail-container {
+        flex-direction: column;
+    }
+
+    .product-images {
+        width: 100%;
+        margin-bottom: var(--space-6);
+    }
+
+    .product-info {
+        width: 100%;
+    }
+
+    /* Ajustements pour le panier */
+    .cart-item .row {
+        flex-direction: column;
+    }
+
+    .cart-item .col-md-2,
+    .cart-item .col-md-5,
+    .cart-item .col-md-1 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: var(--space-3);
+    }
+
+    /* Ajustements pour les formulaires */
+    .form-group {
+        margin-bottom: var(--space-4);
+    }
+
+    /* Ajustements pour le footer */
+    .footer .col-md-4 {
+        margin-bottom: var(--space-6);
+    }
+
+    /* Ajustements pour les boutons d'action */
+    .d-flex.gap-3 {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group .btn {
+        margin-bottom: var(--space-2);
+        width: 100%;
+    }
+}
+
+/* Optimisations pour les petits mobiles */
+@media (max-width: 576px) {
+    .container {
+        padding: 0 var(--space-2);
+    }
+
+    .hero-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .hero-swiper {
+        height: 300px;
+    }
+
+    .testimonial-card {
+        min-height: 320px;
+        max-height: 420px;
+        padding: var(--space-4);
+    }
+
+    .testimonial-text {
+        -webkit-line-clamp: 3;
+    }
+
+    .btn {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--font-size-sm);
+        width: 100%;
+    }
+
+    .btn-lg {
+        padding: var(--space-3) var(--space-5);
+        font-size: var(--font-size-base);
+    }
+
+    /* Ajustements pour les cartes de produits */
+    .product-card {
+        margin-bottom: var(--space-4);
+    }
+
+    .product-image {
+        height: 250px;
+    }
+
+    /* Ajustements pour le détail produit */
+    .swiper {
+        height: 300px;
+    }
+
+    .thumbnail-swiper {
+        height: 80px;
+    }
+
+    .thumbnail-swiper .swiper-slide {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Ajustements pour les formulaires */
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-row > div {
+        width: 100%;
+        margin-bottom: var(--space-3);
+    }
+
+    /* Ajustements pour les boutons favoris */
+    .favorite-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+/* Optimisations pour les très petits mobiles */
+@media (max-width: 360px) {
+    .hero {
+        min-height: auto;
+        padding: var(--space-6) 0;
+    }
+
+    .hero-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .hero-swiper {
+        height: 250px;
+    }
+
+    .navbar-brand img {
+        height: 30px;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .feature-icon i {
+        font-size: 1.5rem;
+    }
+
+    .testimonial-card {
+        min-height: 300px;
+        padding: var(--space-3);
+    }
+
+    .client-photo,
+    .client-photo-placeholder {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Ajustements pour les boutons favoris */
+    .favorite-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* Optimisations pour les appareils à écran tactile */
+@media (hover: none) {
+    .btn,
+    .card,
+    .feature-card,
+    .testimonial-card,
+    .product-card,
+    .favorite-btn {
+        transition: none;
+    }
+
+    .btn:hover,
+    .card:hover,
+    .feature-card:hover,
+    .testimonial-card:hover,
+    .product-card:hover {
+        transform: none;
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Augmenter la taille des zones tactiles */
+    .nav-link,
+    .dropdown-item,
+    .btn,
+    .favorite-btn,
+    .social-link {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .form-control,
+    .form-select {
+        height: 48px;
+    }
+
+    /* Améliorer la visibilité des éléments interactifs */
+    .btn {
+        opacity: 0.95;
+    }
+}
+
+/* Optimisations pour les appareils à écran très petit en mode paysage */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        min-height: auto;
+        padding: var(--space-8) 0;
+    }
+
+    .hero-content {
+        max-width: 50%;
+    }
+
+    .hero-swiper {
+        height: 300px;
+    }
+
+    .navbar {
+        padding: var(--space-2) 0;
+    }
+
+    .navbar-brand img {
+        height: 30px;
+    }
+}
+
+/* Optimisations pour l'impression */
+@media print {
+    body {
+        font-family: Georgia, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        background: white !important;
+        color: black !important;
+    }
+
+    .navbar,
+    .footer,
+    .btn,
+    .swiper-button-next,
+    .swiper-button-prev,
+    .swiper-pagination {
+        display: none !important;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        color: black !important;
+    }
+
+    p, li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    a {
+        color: black !important;
+        text-decoration: underline;
+    }
+
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 90%;
+    }
+
+    .card,
+    .feature-card,
+    .testimonial-card {
+        break-inside: avoid;
+        border: 1px solid #ddd;
+        box-shadow: none !important;
+    }
+}
+
+/* Accessibilité améliorée */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Amélioration du contraste pour l'accessibilité */
+@media (prefers-contrast: high) {
+    :root {
+        --color-primary: #8B4513;
+        --color-text-muted: #333333;
+    }
+
+    .btn-outline-primary {
+        border-width: 2px;
+    }
+}

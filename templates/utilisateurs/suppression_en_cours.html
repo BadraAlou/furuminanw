@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h2 class="mb-0"><i class="fas fa-hourglass-half me-2"></i>{{ titre }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Suppression programmée</h5>
+                        <p class="mb-0">Votre demande de suppression de compte a été enregistrée. Votre compte sera définitivement supprimé dans <strong>{{ jours_restants }} jour{{ jours_restants|pluralize }}</strong>.</p>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-warning mb-2">{{ jours_restants }}</div>
+                                    <h6>Jour{{ jours_restants|pluralize }} restant{{ jours_restants|pluralize }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="h5 text-muted mb-2">{{ date_suppression|date:"d/m/Y" }}</div>
+                                    <h6>Date de suppression</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>État actuel de votre compte</h6>
+                        <ul class="mb-0">
+                            <li>Votre compte est <strong>désactivé</strong> mais récupérable</li>
+                            <li>Vous ne pouvez plus passer de nouvelles commandes</li>
+                            <li>Vos données personnelles sont marquées pour suppression</li>
+                            <li>Vous pouvez encore annuler cette demande</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <h6 class="mb-2"><i class="fas fa-undo me-2"></i>Vous avez changé d'avis ?</h6>
+                        <p class="mb-3">Vous pouvez annuler cette demande de suppression à tout moment pendant les {{ jours_restants }} prochains jours. Votre compte sera immédiatement réactivé.</p>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            <form method="post" action="{% url 'utilisateurs:annuler_suppression_connecte' %}" class="me-md-2">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success" onclick="return confirm('Voulez-vous vraiment annuler la suppression de votre compte ?')">
+                                    <i class="fas fa-undo me-2"></i>Annuler la suppression
+                                </button>
+                            </form>
+                            <a href="{% url 'utilisateurs:annuler_suppression' token_suppression %}" class="btn btn-outline-success">
+                                <i class="fas fa-link me-2"></i>Lien d'annulation par email
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline mt-4">
+                        <h6 class="mb-3">Chronologie de la suppression :</h6>
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-content">
+                                <h6>Demande enregistrée</h6>
+                                <small class="text-muted">Votre demande a été confirmée</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item active">
+                            <div class="timeline-marker bg-warning"></div>
+                            <div class="timeline-content">
+                                <h6>Période de grâce ({{ jours_restants }} jours)</h6>
+                                <small class="text-muted">Vous pouvez encore annuler</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-danger"></div>
+                            <div class="timeline-content">
+                                <h6>Suppression définitive</h6>
+                                <small class="text-muted">{{ date_suppression|date:"d/m/Y" }} - Action irréversible</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-secondary mt-4">
+                        <h6 class="mb-2"><i class="fas fa-envelope me-2"></i>Email de confirmation</h6>
+                        <p class="mb-0">Un email de confirmation a été envoyé à votre adresse. Il contient un lien d'annulation que vous pouvez utiliser même si vous n'êtes pas connecté au site.</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Suppression conforme RGPD
+                        </small>
+                        <a href="{% url 'pages:contact' %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-question-circle me-1"></i>Besoin d'aide ?
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -23px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.timeline-item.completed .timeline-marker {
+    background-color: #28a745 !important;
+}
+
+.timeline-item.active .timeline-marker {
+    background-color: #ffc107 !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+.timeline-content h6 {
+    margin-bottom: 5px;
+    color: #495057;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" style="background-color: var(--color-accent);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title" style="color: var(--color-text);">Notre Mission</h1>
+                    <p class="hero-description mb-4">Soulager les futures mariées et leurs familles de la lourde charge de la préparation du trousseau, en valorisant l'artisanat et les traditions locales, tout en offrant une expérience personnalisée et inoubliable.</p>
+
+                    <div class="mission-details">
+                        <div class="mb-4">
+                            <h4 class="mb-3" style="color: var(--color-text);">Notre Engagement</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-3 hover-effect">
+                                    <i class="fas fa-check me-2" style="color: var(--color-primary);"></i>
+                                    Accompagnement personnalisé tout au long du processus
+                                </li>
+                                <li class="mb-3 hover-effect">
+                                    <i class="fas fa-check me-2" style="color: var(--color-primary);"></i>
+                                    Collaboration avec les meilleurs artisans locaux
+                                </li>
+                                <li class="mb-3 hover-effect">
+                                    <i class="fas fa-check me-2" style="color: var(--color-primary);"></i>
+                                    Respect des traditions et innovation dans les designs
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="mb-3" style="color: var(--color-text);">Notre Vision</h4>
+                            <p>Devenir la référence en matière de trousseaux de mariage au Mali, en alliant tradition et modernité, tout en contribuant au développement de l'artisanat local.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Swiper -->
+                <div class="swiper mission-swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="{% static 'img/furu-minanw-logo.jpg' %}"
+                                 alt="Furu Minanw - L'art du trousseau"
+                                 class="img-fluid rounded shadow">
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="{% static 'img/tradition-mere-fille.jpg' %}"
+                                 alt="Transmission des traditions"
+                                 class="img-fluid rounded shadow">
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="{% static 'img/mariee-traditionnelle.jpg' %}"
+                                 alt="Mariée en tenue traditionnelle"
+                                 class="img-fluid rounded shadow">
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5" style="background-color: var(--color-background);">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="stat-card hover-effect">
+                    <div class="display-4 mb-2" style="color: var(--color-primary);">3</div>
+                    <h3>Packs différents</h3>
+                    <p class="text-muted">Standard, Prestige et Luxe</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stat-card hover-effect">
+                    <div class="display-4 mb-2" style="color: var(--color-primary);">100%</div>
+                    <h3>Artisanat local</h3>
+                    <p class="text-muted">Fait main au Mali</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stat-card hover-effect">
+                    <div class="display-4 mb-2" style="color: var(--color-primary);">0</div>
+                    <h3>Paiement d'avance</h3>
+                    <p class="text-muted">Payez à la livraison</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5" style="background-color: var(--color-secondary);">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: var(--color-text);">Pourquoi nous choisir ?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card hover-effect">
+                    <div class="text-center">
+                        <i class="fas fa-star fa-3x mb-3" style="color: var(--color-primary);"></i>
+                        <h3 class="h4">Qualité garantie</h3>
+                        <p>Chaque pièce est minutieusement inspectée pour garantir une qualité exceptionnelle.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card hover-effect">
+                    <div class="text-center">
+                        <i class="fas fa-handshake fa-3x mb-3" style="color: var(--color-primary);"></i>
+                        <h3 class="h4">Paiement sécurisé</h3>
+                        <p>Payez uniquement à la livraison après avoir vérifié votre trousseau.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card hover-effect">
+                    <div class="text-center">
+                        <i class="fas fa-paint-brush fa-3x mb-3" style="color: var(--color-primary);"></i>
+                        <h3 class="h4">Personnalisation</h3>
+                        <p>Des options de personnalisation pour créer un trousseau unique qui vous ressemble.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5" style="background-color: var(--color-background);">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: var(--color-text);">Notre Équipe</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="team-card hover-effect">
+                    <div class="text-center">
+                        <img src="https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg"
+                             alt="Membre de l'équipe"
+                             class="img-fluid rounded-circle mb-3 shadow"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                        <h3 class="h5">Aminata Diallo</h3>
+                        <p class="text-muted">Fondatrice & Directrice</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="team-card hover-effect">
+                    <div class="text-center">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
+                             alt="Membre de l'équipe"
+                             class="img-fluid rounded-circle mb-3 shadow"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                        <h3 class="h5">Ibrahim Touré</h3>
+                        <p class="text-muted">Responsable Production</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="team-card hover-effect">
+                    <div class="text-center">
+                        <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg"
+                             alt="Membre de l'équipe"
+                             class="img-fluid rounded-circle mb-3 shadow"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                        <h3 class="h5">Fatoumata Koné</h3>
+                        <p class="text-muted">Responsable Relations Clients</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="team-card hover-effect">
+                    <div class="text-center">
+                        <img src="https://images.pexels.com/photos/2709388/pexels-photo-2709388.jpeg"
+                             alt="Membre de l'équipe"
+                             class="img-fluid rounded-circle mb-3 shadow"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                        <h3 class="h5">Mamadou Keita</h3>
+                        <p class="text-muted">Responsable Logistique</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="team-card hover-effect">
+                    <div class="text-center">
+                        <img src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg"
+                             alt="Membre de l'équipe"
+                             class="img-fluid rounded-circle mb-3 shadow"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                        <h3 class="h5">Aïcha Traoré</h3>
+                        <p class="text-muted">Responsable Marketing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background-color: var(--color-primary); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-4">Prête à créer votre trousseau de mariage ?</h2>
+        <p class="lead mb-4">Découvrez nos collections et laissez-nous vous accompagner dans cette belle aventure.</p>
+        <a href="{% url 'produits:liste_packs' %}" class="btn btn-light btn-lg hover-effect">Voir nos trousseaux</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.mission-swiper {
+    width: 100%;
+    height: 600px;
+    margin-bottom: 20px;
+}
+
+.mission-swiper .swiper-slide {
+    width: 100%;
+    height: 100%;
+}
+
+.mission-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.8);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 20px;
+}
+
+.swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: var(--color-primary);
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1;
+    background: var(--color-primary);
+}
+
+/* Effets de survol */
+.hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-effect:hover {
+    transform: translateY(-10px);
+}
+
+.stat-card {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.feature-card {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.team-card {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.btn.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const missionSwiper = new Swiper('.mission-swiper', {
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+        effect: 'fade',
+        fadeEffect: {
+            crossFade: true
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+});
+</script>
+{% endblock %}

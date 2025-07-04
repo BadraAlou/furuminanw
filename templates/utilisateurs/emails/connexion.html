@@ -1,0 +1,76 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Nouvelle connexion détectée - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Nouvelle connexion détectée</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">Sécurité de votre compte</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ user.first_name|default:user.username }}</strong>,</p>
+
+<div class="alert-box alert-warning">
+    <h4 style="margin-top: 0; color: #f57c00;"><i style="margin-right: 8px;">⚠️</i> Alerte de sécurité</h4>
+    <p style="margin: 0;">Nous avons détecté une nouvelle connexion à votre compte Furu Minanw. Si c'était vous, vous pouvez ignorer cet email.</p>
+</div>
+
+<div class="info-section">
+    <h3>Détails de la connexion</h3>
+    <ul style="margin: 0; padding-left: 20px;">
+        <li><strong>Date :</strong> {{ connection_date }}</li>
+        <li><strong>Heure :</strong> {{ connection_time }}</li>
+        <li><strong>Localisation :</strong> {{ location|default:"Non disponible" }}</li>
+        <li><strong>Appareil :</strong> {{ device|truncatechars:50 }}</li>
+    </ul>
+</div>
+
+<div class="alert-box alert-danger">
+    <h4 style="margin-top: 0; color: #d32f2f;"><i style="margin-right: 8px;">🔒</i> Connexion non autorisée ?</h4>
+    <p>Si vous ne reconnaissez pas cette activité, veuillez sécuriser votre compte immédiatement en cliquant sur le bouton ci-dessous.</p>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ security_url }}" class="btn btn-danger">Signaler une connexion suspecte</a>
+</div>
+
+<h3 style="color: #C27C4A; margin-bottom: 20px;">Recommandations de sécurité :</h3>
+
+<ul class="feature-list">
+    <li>
+        <div class="feature-icon">🔑</div>
+        <div class="feature-text">
+            <h4>Changez votre mot de passe</h4>
+            <p>Utilisez un mot de passe fort et unique pour votre compte Furu Minanw.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">📱</div>
+        <div class="feature-text">
+            <h4>Vérifiez vos appareils</h4>
+            <p>Assurez-vous que seuls vos appareils de confiance ont accès à votre compte.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">👀</div>
+        <div class="feature-text">
+            <h4>Surveillez votre compte</h4>
+            <p>Vérifiez régulièrement l'activité de votre compte et vos commandes.</p>
+        </div>
+    </li>
+</ul>
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">💡</i> Besoin d'aide ?</h4>
+    <p style="margin: 0;">Si vous avez des questions concernant la sécurité de votre compte, contactez notre équipe support qui vous aidera à sécuriser votre compte.</p>
+</div>
+
+<p style="margin-top: 30px;">
+    Votre sécurité est notre priorité.<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ user.email }} pour des raisons de sécurité
+{% endblock %}

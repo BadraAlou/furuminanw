@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+
+    {% if panier.get_nombre_produits > 0 %}
+        <div class="row">
+            <!-- Liste des produits -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Produits ({{ panier.get_nombre_produits }})</h5>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
+                            Vous pouvez modifier les quantités et options
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        {% for item in panier.get_produits %}
+                            <div class="cart-item">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2 mb-3 mb-md-0">
+                                        {% if item.pack.image_principale %}
+                                            <img src="{{ item.pack.image_principale.url }}" alt="{{ item.pack.nom }}" class="img-fluid rounded shadow-sm" loading="lazy">
+                                        {% elif item.pack.images.first %}
+                                            <img src="{{ item.pack.images.first.image.url }}" alt="{{ item.pack.nom }}" class="img-fluid rounded shadow-sm" loading="lazy">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/150" alt="{{ item.pack.nom }}" class="img-fluid rounded shadow-sm">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-5 mb-3 mb-md-0">
+                                        <h5 class="mb-1">{{ item.pack.nom }}</h5>
+                                        <p class="mb-1 text-muted small">{{ item.pack.description|truncatewords:15 }}</p>
+                                        <span class="badge bg-light text-dark">{{ item.pack.get_categorie_display }}</span>
+
+                                        {% if item.options_details %}
+                                            <div class="options-selected mt-2">
+                                                <h6 class="mb-1 text-primary">
+                                                    <i class="fas fa-cog me-1" aria-hidden="true"></i>
+                                                    Options sélectionnées:
+                                                </h6>
+                                                {% for option in item.options_details %}
+                                                    <span class="badge bg-primary me-1 mb-1">
+                                                        {{ option.nom }}
+                                                    </span>
+                                                {% endfor %}
+                                                <div class="mt-2">
+                                                    <a href="{% url 'commandes:modifier_options_panier' item.pack.id %}"
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-edit me-1" aria-hidden="true"></i>Modifier les options
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-2 mb-3 mb-md-0">
+                                        <form action="{% url 'commandes:modifier_panier' item.pack.id %}" method="post" class="d-flex align-items-center">
+                                            {% csrf_token %}
+                                            <div class="input-group input-group-sm">
+                                                <button type="button" class="btn btn-outline-secondary quantity-btn decrement" aria-label="Diminuer la quantité" onclick="updateQuantity(this, -1)">
+                                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                                </button>
+                                                <input type="number" name="quantite" class="form-control text-center" value="{{ item.quantite }}" min="1" max="10" aria-label="Quantité">
+                                                <button type="button" class="btn btn-outline-secondary quantity-btn increment" aria-label="Augmenter la quantité" onclick="updateQuantity(this, 1)">
+                                                    <i class="fas fa-plus" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-2 mb-3 mb-md-0 text-center">
+                                        <div class="price-info">
+                                            <span class="fw-bold fs-6">{{ item.prix_total }} FCFA</span>
+                                            {% if item.quantite > 1 %}
+                                                <small class="d-block text-muted">
+                                                    {{ item.prix }} FCFA × {{ item.quantite }}
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 text-end">
+                                        <div class="delete-button-container">
+                                            <a href="{% url 'commandes:supprimer_du_panier' item.pack.id %}"
+                                               class="delete-btn"
+                                               title="Supprimer cet article"
+                                               aria-label="Supprimer cet article"
+                                               onclick="return confirm('Voulez-vous vraiment supprimer cet article ?')">
+                                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if not forloop.last %}
+                                <hr class="my-3">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Résumé du panier -->
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 100px;">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Résumé de la commande</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Sous-total :</span>
+                            <span class="fw-bold">{{ panier.get_total }} FCFA</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Livraison :</span>
+                            <span class="text-success fw-bold">Gratuite</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="h5">Total :</span>
+                            <span class="h5 text-primary">{{ panier.get_total }} FCFA</span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'commandes:recapitulatif' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-eye me-2" aria-hidden="true"></i>
+                                Voir le récapitulatif
+                            </a>
+                            <a href="{% url 'produits:liste_packs' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-shopping-bag me-2" aria-hidden="true"></i>
+                                Continuer les achats
+                            </a>
+                        </div>
+
+                        <div class="alert alert-info mt-3 mb-0">
+                            <h6 class="mb-2">
+                                <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+                                Paiement à la livraison
+                            </h6>
+                            <p class="mb-0">Paiement uniquement à la livraison (espèces, Orange Money ou Wave)</p>
+                        </div>
+
+                        <!-- Informations sur les personnalisations -->
+                        {% for item in panier.get_produits %}
+                            {% if item.options_details %}
+                                <div class="alert alert-warning mt-3 mb-0">
+                                    <h6 class="mb-2">
+                                        <i class="fas fa-magic me-2" aria-hidden="true"></i>
+                                        Personnalisations
+                                    </h6>
+                                    <p class="mb-0">
+                                        Vous avez sélectionné des options de personnalisation.
+                                        Vous pourrez préciser vos préférences (textes à graver, couleurs, etc.)
+                                        lors de la finalisation de votre commande.
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-shopping-cart fa-4x text-muted" aria-hidden="true"></i>
+            </div>
+            <h2 class="h4 mb-3">Votre panier est vide</h2>
+            <p class="text-muted mb-4">Découvrez nos magnifiques trousseaux de mariage et commencez votre sélection.</p>
+            <a href="{% url 'produits:liste_packs' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-bag me-2" aria-hidden="true"></i>
+                Voir nos trousseaux
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.options-selected {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--color-primary);
+}
+
+.cart-item {
+    transition: all 0.3s ease;
+    padding: 15px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.cart-item:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Conteneur pour le bouton de suppression */
+.delete-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 40px;
+}
+
+/* Styles pour le bouton de suppression */
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.delete-btn:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.delete-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+.delete-btn i {
+    font-size: 12px;
+}
+
+.price-info {
+    background-color: var(--color-accent);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.btn {
+    transition: all 0.3s ease;
+    font-family: var(--font-primary);
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+}
+
+.alert {
+    border-radius: 8px;
+}
+
+.input-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.input-group-sm input {
+    width: 60px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .sticky-top {
+        position: relative !important;
+        top: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        padding: 10px;
+    }
+
+    .options-selected {
+        padding: 8px;
+    }
+
+    .delete-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .delete-btn i {
+        font-size: 10px;
+    }
+
+    /* Ajustement pour mobile - centrer le bouton */
+    .delete-button-container {
+        justify-content: center;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-header small {
+        margin-top: 5px;
+    }
+
+    .cart-item .row {
+        flex-direction: column;
+    }
+
+    .cart-item .col-md-2,
+    .cart-item .col-md-5,
+    .cart-item .col-md-1 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .price-info {
+        margin: 10px auto;
+        max-width: 150px;
+    }
+
+    .input-group {
+        justify-content: center;
+        margin: 0 auto;
+        max-width: 150px;
+    }
+}
+
+/* Animation au chargement */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cart-item {
+    animation: fadeInUp 0.5s ease forwards;
+}
+</style>
+
+{% block extra_js %}
+<script>
+function updateQuantity(button, change) {
+    const input = button.parentElement.querySelector('input');
+    const currentValue = parseInt(input.value);
+    const newValue = currentValue + change;
+
+    if (newValue >= 1 && newValue <= 10) {
+        input.value = newValue;
+        button.closest('form').submit();
+    }
+}
+
+// Animation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    const cartItems = document.querySelectorAll('.cart-item');
+    cartItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

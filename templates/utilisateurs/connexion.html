@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0">Connexion</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Se connecter</button>
+                    </form>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <span>Pas encore de compte ?</span>
+                    <a href="{% url 'utilisateurs:inscription' %}" class="text-decoration-none">Inscrivez-vous</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Bienvenue chez Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Bienvenue chez Furu Minanw !</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">Votre compte a été créé avec succès</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ user.first_name|default:user.username }}</strong>,</p>
+
+<p>Nous sommes ravis de vous accueillir dans la communauté Furu Minanw ! Votre compte a été créé avec succès et vous pouvez maintenant découvrir notre collection exceptionnelle de trousseaux nuptiaux.</p>
+
+<div class="alert-box alert-success">
+    <h4 style="margin-top: 0; color: #2e7d32;"><i style="margin-right: 8px;">✅</i> Compte activé</h4>
+    <p style="margin: 0;">Votre compte est maintenant actif et vous pouvez commencer à explorer nos collections de trousseaux qui valorisent l'artisanat malien.</p>
+</div>
+
+<h3 style="color: #C27C4A; margin-bottom: 20px;">Découvrez ce que vous pouvez faire :</h3>
+
+<ul class="feature-list">
+    <li>
+        <div class="feature-icon">1</div>
+        <div class="feature-text">
+            <h4>Explorer nos packs trousseaux</h4>
+            <p>Découvrez nos différentes gammes : Standard, Prestige et Luxe, toutes personnalisables selon vos goûts et traditions.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">2</div>
+        <div class="feature-text">
+            <h4>Personnaliser votre trousseau</h4>
+            <p>Choisissez parmi différentes options de couleurs, matières et styles pour créer un trousseau unique qui vous ressemble.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">3</div>
+        <div class="feature-text">
+            <h4>Commander en toute confiance</h4>
+            <p>Profitez de notre système de paiement à la livraison pour régler votre commande uniquement après l'avoir reçue et vérifiée.</p>
+        </div>
+    </li>
+</ul>
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">💡</i> Le saviez-vous ?</h4>
+    <p style="margin: 0;">Chaque pièce de nos trousseaux est fabriquée à la main par des artisans maliens qualifiés, garantissant authenticité et qualité exceptionnelle.</p>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="https://www.furuminanw.com/produits/" class="btn">Découvrir nos trousseaux</a>
+</div>
+
+<p>Si vous avez des questions ou besoin d'aide pour choisir votre trousseau, notre équipe est à votre disposition. N'hésitez pas à nous contacter.</p>
+
+<p style="margin-top: 30px;">
+    Nous vous souhaitons une excellente expérience sur Furu Minanw !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ user.email }}
+{% endblock %}

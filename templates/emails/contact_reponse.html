@@ -1,0 +1,75 @@
+<!-- furu_minanw/templates/emails/contact_reponse.html -->
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Réponse à votre message - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Merci pour votre message !</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">Nous avons bien reçu votre demande</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ nom }}</strong>,</p>
+
+<p>Nous vous remercions pour votre message concernant "{{ sujet }}". Votre demande est importante pour nous et nous y accordons toute notre attention.</p>
+
+<div class="info-section">
+    <h3>Votre message</h3>
+    <div style="background-color: white; padding: 15px; border-radius: 8px; border-left: 4px solid #C27C4A;">
+        <p style="margin: 0; font-style: italic;">"{{ message }}"</p>
+    </div>
+</div>
+
+<div class="alert-box alert-success">
+    <h4 style="margin-top: 0; color: #2e7d32;"><i style="margin-right: 8px;">✅</i> Message reçu</h4>
+    <p style="margin: 0;">Notre équipe va examiner votre demande et vous répondra dans les plus brefs délais, généralement sous 24 heures.</p>
+</div>
+
+<h3 style="color: #C27C4A; margin-bottom: 20px;">En attendant notre réponse :</h3>
+
+<ul class="feature-list">
+    <li>
+        <div class="feature-icon">📖</div>
+        <div class="feature-text">
+            <h4>Consultez notre FAQ</h4>
+            <p>Vous trouverez peut-être une réponse immédiate à votre question dans notre section FAQ.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">👗</div>
+        <div class="feature-text">
+            <h4>Découvrez nos collections</h4>
+            <p>Explorez nos différents packs de trousseaux et leurs options de personnalisation.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">📱</div>
+        <div class="feature-text">
+            <h4>Suivez-nous</h4>
+            <p>Restez informé de nos nouveautés en nous suivant sur nos réseaux sociaux.</p>
+        </div>
+    </li>
+</ul>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="https://www.furuminanw.com/faq/" class="btn">Consulter la FAQ</a>
+</div>
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">📞</i> Contact urgent ?</h4>
+    <p style="margin: 0;">
+        Pour toute demande urgente, vous pouvez nous appeler directement au 
+        <a href="tel:+22362980318" style="color: #1976d2; text-decoration: none;">62 98 03 18</a> 
+        aux heures d'ouverture.
+    </p>
+</div>
+
+<p style="margin-top: 30px;">
+    Merci de votre intérêt pour Furu Minanw !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ email }}
+{% endblock %}

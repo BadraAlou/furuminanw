@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+
+    <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Menu du compte</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'utilisateurs:profil' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user me-2"></i> Mon profil
+                    </a>
+                    <a href="{% url 'utilisateurs:historique_commandes' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2"></i> Mes commandes
+                    </a>
+                    <a href="{% url 'utilisateurs:mes_avis' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-star me-2"></i> Mes avis
+                        {% if avis_recents %}
+                            <span class="badge bg-primary ms-2">{{ avis_recents|length }}</span>
+                        {% endif %}
+                    </a>
+
+                    {% if user.profil.suppression_demandee %}
+                        <a href="{% url 'utilisateurs:suppression_en_cours' %}" class="list-group-item list-group-item-action text-warning">
+                            <i class="fas fa-hourglass-half me-2"></i> Suppression en cours
+                        </a>
+                    {% else %}
+                        <a href="{% url 'utilisateurs:demander_suppression' %}" class="list-group-item list-group-item-action text-danger">
+                            <i class="fas fa-trash-alt me-2"></i> Supprimer mon compte
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'utilisateurs:deconnexion' %}" class="list-group-item list-group-item-action text-secondary">
+                        <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                    </a>
+                </div>
+            </div>
+
+            <!-- Section photo de profil -->
+            <div class="card mt-3">
+                <div class="card-body text-center">
+                    {% if user.profil.photo_profil %}
+                        <img src="{{ user.profil.photo_profil.url }}"
+                             alt="Photo de profil"
+                             class="rounded-circle mb-3"
+                             style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3 mx-auto"
+                             style="width: 120px; height: 120px;">
+                            <i class="fas fa-user fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <h6>{{ user.profil.get_nom_affichage }}</h6>
+                    {% if user.profil.date_mariage %}
+                        <small class="text-muted">
+                            <i class="fas fa-heart me-1"></i>
+                            Marié(e) le {{ user.profil.date_mariage|date:"d/m/Y" }}
+                        </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Avis récents -->
+            {% if avis_recents %}
+                <div class="card mt-3">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0">Mes avis récents</h6>
+                    </div>
+                    <div class="card-body">
+                        {% for avis in avis_recents %}
+                            <div class="mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div class="rating">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= avis.note %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="badge
+                                        {% if avis.statut == 'en_attente' %}bg-warning text-dark
+                                        {% elif avis.statut == 'approuve' %}bg-success
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ avis.get_statut_display }}
+                                    </span>
+                                </div>
+                                <h6 class="mb-1">{{ avis.titre }}</h6>
+                                <small class="text-muted">{{ avis.date_creation|date:"d/m/Y" }}</small>
+                            </div>
+                        {% endfor %}
+                        <a href="{% url 'utilisateurs:mes_avis' %}" class="btn btn-sm btn-outline-primary w-100">
+                            Voir tous mes avis
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if user.profil.suppression_demandee %}
+                <div class="card mt-3 border-warning">
+                    <div class="card-body">
+                        <h6 class="card-title text-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Compte en cours de suppression
+                        </h6>
+                        <p class="card-text small">
+                            Votre compte sera supprimé dans {{ user.profil.jours_restants_suppression }} jour{{ user.profil.jours_restants_suppression|pluralize }}.
+                        </p>
+                        <a href="{% url 'utilisateurs:suppression_en_cours' %}" class="btn btn-sm btn-warning">
+                            Voir les détails
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Informations personnelles</h5>
+                    {% if user.profil.peut_laisser_avis %}
+                        <a href="{% url 'utilisateurs:ajouter_avis' %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i> Ajouter un avis
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if not user.profil.peut_laisser_avis %}
+                        <div class="alert alert-info">
+                            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Pour laisser un avis</h6>
+                            <p class="mb-0">Vous devez avoir une photo de profil et une date de mariage pour pouvoir partager votre expérience.</p>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ u_form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ u_form.last_name|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ u_form.email|as_crispy_field }}
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">Coordonnées</h5>
+
+                        <div class="mb-3">
+                            {{ p_form.telephone|as_crispy_field }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ p_form.adresse|as_crispy_field }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ p_form.ville|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ p_form.pays|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">Profil Client</h5>
+
+                        <div class="mb-3">
+                            {{ p_form.photo_profil|as_crispy_field }}
+                            <small class="form-text text-muted">
+                                Photo obligatoire pour laisser des avis. Formats acceptés : JPG, PNG (max 5MB)
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ p_form.date_mariage|as_crispy_field }}
+                            <small class="form-text text-muted">
+                                Date obligatoire pour laisser des avis
+                            </small>
+                        </div>
+
+                        <h6 class="mb-3">Confidentialité des avis</h6>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ p_form.autoriser_nom_public }}
+                                <label class="form-check-label" for="{{ p_form.autoriser_nom_public.id_for_label }}">
+                                    {{ p_form.autoriser_nom_public.label }}
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    Si coché, votre nom complet sera affiché. Sinon, seul votre prénom et l'initiale de votre nom apparaîtront.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ p_form.affichage_anonyme }}
+                                <label class="form-check-label" for="{{ p_form.affichage_anonyme.id_for_label }}">
+                                    {{ p_form.affichage_anonyme.label }}
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    Si coché, vos avis apparaîtront comme "Client anonyme"
+                                </small>
+                            </div>
+                        </div>
+
+                        {% if not user.profil.suppression_demandee %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                            </button>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-lock me-2"></i>
+                                Votre compte est en cours de suppression. Les modifications ne sont plus possibles.
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.list-group-item {
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--color-accent);
+    transform: translateX(5px);
+}
+
+.rating i {
+    font-size: 0.9rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

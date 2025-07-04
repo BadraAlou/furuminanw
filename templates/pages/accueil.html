@@ -1,0 +1,429 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">Trousseaux de mariage<br>authentiques et artisanaux</h1>
+                    <p class="hero-description">Découvrez nos collections uniques de trousseaux de mariage maliens, fabriqués à la main par nos artisans pour valoriser votre cérémonie et honorer vos traditions.</p>
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'produits:liste_packs' %}" class="btn btn-primary">DÉCOUVRIR NOS TROUSSEAUX</a>
+                        <a href="{% url 'pages:a_propos' %}" class="btn btn-outline-primary">NOTRE HISTOIRE</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="swiper hero-swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="hero-image">
+                                <img src="{% static 'img/hero1.jpg' %}" alt="Mariée traditionnelle malienne">
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="hero-image">
+                                <img src="{% static 'img/hero2.jpg' %}" alt="Collection Furu Minanw">
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="hero-image">
+                                <img src="{% static 'img/hero3.jpg' %}" alt="Articles traditionnels">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2>Ce qui nous distingue</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hands"></i>
+                    </div>
+                    <h3>Artisanat Authentique</h3>
+                    <p>Chaque pièce est soigneusement fabriquée à la main par nos artisans maliens.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Passion et Qualité</h3>
+                    <p>Nous sélectionnons les meilleurs matériaux pour une qualité exceptionnelle.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Soutien à la Communauté</h3>
+                    <p>En choisissant nos produits, vous soutenez l'économie locale.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section avec vrais avis clients -->
+<section class="testimonials">
+    <div class="container">
+        <h2 class="text-center mb-5">Ce que nos mariées disent</h2>
+        {% if avis_clients %}
+            <div class="row g-4">
+                {% for avis in avis_clients %}
+                    <div class="col-md-4">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <!-- En-tête avec photo et infos client -->
+                                <div class="client-header mb-3">
+                                    <div class="d-flex align-items-center">
+                                        {% if avis.client.profil.photo_profil %}
+                                            <img src="{{ avis.client.profil.photo_profil.url }}"
+                                                 alt="Photo de {{ avis.client.profil.get_nom_affichage }}"
+                                                 class="client-photo me-3">
+                                        {% else %}
+                                            <div class="client-photo-placeholder me-3">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <h6 class="mb-1">{{ avis.client.profil.get_nom_affichage }}</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-heart me-1"></i>
+                                                Mariée le {{ avis.date_mariage|date:"d/m/Y" }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Note en étoiles -->
+                                <div class="rating mb-3">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= avis.note %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="ms-2 text-muted">({{ avis.note }}/5)</span>
+                                </div>
+
+                                <!-- Titre et contenu de l'avis -->
+                                <h5 class="testimonial-title mb-2">{{ avis.titre }}</h5>
+                                <div class="testimonial-text mb-3">
+                                    "{{ avis.contenu }}"
+                                </div>
+
+                                <!-- Photos du mariage si disponibles -->
+                                {% if avis.photos.exists %}
+                                    <div class="testimonial-photos mb-3">
+                                        <div class="row g-1">
+                                            {% for photo in avis.photos.all|slice:":3" %}
+                                                <div class="col-4">
+                                                    <img src="{{ photo.image.url }}"
+                                                         alt="{{ photo.legende }}"
+                                                         class="img-fluid rounded testimonial-photo"
+                                                         data-bs-toggle="modal"
+                                                         data-bs-target="#photoModal{{ avis.id }}_{{ photo.id }}">
+                                                </div>
+
+                                                <!-- Modal pour agrandir la photo -->
+                                                <div class="modal fade" id="photoModal{{ avis.id }}_{{ photo.id }}" tabindex="-1">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">
+                                                                    {% if photo.legende %}{{ photo.legende }}{% else %}Photo de mariage{% endif %}
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                <img src="{{ photo.image.url }}"
+                                                                     alt="{{ photo.legende }}"
+                                                                     class="img-fluid">
+                                                                {% if photo.legende %}
+                                                                    <p class="mt-2 text-muted">{{ photo.legende }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% if avis.photos.count > 3 %}
+                                            <small class="text-muted">
+                                                +{{ avis.photos.count|add:"-3" }} autre{{ avis.photos.count|add:"-3"|pluralize }} photo{{ avis.photos.count|add:"-3"|pluralize }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                                <!-- Badge "Avis vérifié" -->
+                                <div class="verified-badge">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Avis vérifié
+                                    </span>
+                                    <small class="text-muted ms-2">
+                                        {{ avis.date_creation|date:"M Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Lien vers tous les avis -->
+            <div class="text-center mt-5">
+                <a href="{% url 'pages:tous_les_avis' %}" class="btn btn-outline-primary">
+                    Voir tous les avis de nos clientes
+                </a>
+            </div>
+        {% else %}
+            <!-- Avis par défaut si aucun avis client -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-text">
+                                "Mon trousseau de mariage était exactement comme je l'imaginais. La qualité des pièces artisanales et l'attention aux détails étaient vraiment exceptionnelles."
+                            </div>
+                            <div class="testimonial-author">
+                                <h4>Aminata Diallo</h4>
+                                <p>Mariée en 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-text">
+                                "Le service personnalisé de Furu Minanw a rendu mon expérience exceptionnelle. Je me sentais très écoutée et on a su m'accompagner parfaitement dans mes choix."
+                            </div>
+                            <div class="testimonial-author">
+                                <h4>Fatoumata Koné</h4>
+                                <p>Mariée en 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-text">
+                                "La qualité des matériaux et le savoir-faire artisanal sont remarquables. Mon trousseau est devenu un trésor familial qui se chérit pour les années à venir."
+                            </div>
+                            <div class="testimonial-author">
+                                <h4>Kadiatou Camara</h4>
+                                <p>Mariée en 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta">
+    <div class="container text-center">
+        <h2>Prête à créer votre trousseau de mariage?</h2>
+        <p>Explorez notre collection de trousseaux maliens authentiques et personnalisez-le selon vos préférences et traditions familiales.</p>
+        <a href="{% url 'produits:liste_packs' %}" class="btn btn-primary btn-lg">Découvrir nos collections</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-image {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Styles des témoignages */
+.testimonials {
+    background-color: var(--color-accent);
+    padding: 80px 0;
+}
+
+.testimonial-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px;
+    height: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styles pour les vrais avis clients */
+.client-header {
+    border-bottom: 1px solid var(--color-secondary);
+    padding-bottom: 15px;
+}
+
+.client-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-primary);
+}
+
+.client-photo-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: 1.2rem;
+}
+
+.rating i {
+    font-size: 1rem;
+    margin-right: 2px;
+}
+
+.testimonial-title {
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.testimonial-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    font-style: italic;
+    flex-grow: 1;
+}
+
+.testimonial-photos img {
+    height: 60px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.testimonial-photos img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.verified-badge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid var(--color-secondary);
+}
+
+.verified-badge .badge {
+    font-size: 0.75rem;
+}
+
+/* Styles pour les avis par défaut */
+.testimonial-author h4 {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.testimonial-author p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .client-header .d-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .client-photo,
+    .client-photo-placeholder {
+        margin: 0 auto 10px;
+    }
+
+    .testimonial-photos .row {
+        justify-content: center;
+    }
+
+    .verified-badge {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Hero Slider
+    const heroSwiper = new Swiper('.hero-swiper', {
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+});
+</script>
+{% endblock %}

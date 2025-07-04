@@ -1,0 +1,104 @@
+/* Styles pour l'administration des avis */
+
+.field-client_info img {
+    border: 2px solid #C27C4A;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.field-photos_preview img {
+    border: 1px solid #ddd;
+    transition: transform 0.2s ease;
+}
+
+.field-photos_preview img:hover {
+    transform: scale(1.1);
+    border-color: #C27C4A;
+}
+
+.field-statut_colore span {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+.field-note_etoiles {
+    font-size: 1.1rem;
+}
+
+.field-actions .button {
+    padding: 4px 8px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.field-actions .button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour les inlines des photos */
+.inline-group .tabular tr.has_original td {
+    padding: 8px;
+}
+
+.inline-group .field-image_preview img {
+    border-radius: 4px;
+    border: 2px solid #C27C4A;
+}
+
+/* Amélioration de la liste des avis */
+#changelist .results {
+    overflow-x: auto;
+}
+
+#changelist .results th,
+#changelist .results td {
+    white-space: nowrap;
+    padding: 8px 12px;
+}
+
+#changelist .results .field-client_nom {
+    min-width: 120px;
+}
+
+#changelist .results .field-titre {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Actions en lot */
+.actions select,
+.actions .button {
+    margin-right: 10px;
+}
+
+.actions .button {
+    background-color: #C27C4A;
+    border-color: #C27C4A;
+}
+
+.actions .button:hover {
+    background-color: #a66a3d;
+    border-color: #a66a3d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .field-photos_preview {
+        overflow-x: auto;
+    }
+
+    .field-photos_preview > div {
+        min-width: 300px;
+    }
+
+    #changelist .results th,
+    #changelist .results td {
+        font-size: 0.875rem;
+        padding: 6px 8px;
+    }
+}

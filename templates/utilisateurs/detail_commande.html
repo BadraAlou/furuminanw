@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+
+    <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Menu du compte</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'utilisateurs:profil' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> Mon profil
+                    </a>
+                    <a href="{% url 'utilisateurs:historique_commandes' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-shopping-bag me-2"></i> Mes commandes
+                    </a>
+                    <a href="{% url 'utilisateurs:deconnexion' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Détails de la commande #{{ commande.id }}</h5>
+                    <span class="badge {% if commande.statut == 'en_attente' %}bg-warning text-dark{% elif commande.statut == 'confirmee' or commande.statut == 'en_preparation' %}bg-info{% elif commande.statut == 'expediee' %}bg-primary{% elif commande.statut == 'livree' %}bg-success{% elif commande.statut == 'annulee' %}bg-danger{% endif %}">
+                        {{ commande.get_statut_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6>Date de commande :</h6>
+                        <p>{{ commande.date_commande }}</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Adresse de livraison :</h6>
+                            <address>
+                                {{ commande.adresse_livraison }}<br>
+                                {{ commande.ville }}, {{ commande.code_postal }}<br>
+                                {{ commande.pays }}
+                            </address>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Coordonnées :</h6>
+                            <p>
+                                Email : {{ commande.email }}<br>
+                                Téléphone : {{ commande.telephone }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Méthode de paiement :</h6>
+                        <p>{{ commande.get_methode_paiement_display }} (à la livraison)</p>
+                    </div>
+
+                    <h6 class="mb-3">Produits commandés :</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité</th>
+                                    <th class="text-end">Prix</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for element in commande.elements.all %}
+                                    <tr>
+                                        <td>
+                                            {{ element.pack.nom }}
+                                            {% if element.options_selectionnees.exists %}
+                                                <small class="d-block text-muted">
+                                                    Options :
+                                                    {% for option in element.options_selectionnees.all %}
+                                                        {{ option.nom }}{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                </small>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ element.quantite }}</td>
+                                        <td class="text-end">{{ element.prix }} FCFA</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" class="text-end">Total :</th>
+                                    <th class="text-end">{{ commande.total }} FCFA</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    {% if commande.notes %}
+                        <div class="mt-4">
+                            <h6>Notes :</h6>
+                            <p>{{ commande.notes }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{% url 'utilisateurs:historique_commandes' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i> Retour à la liste des commandes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

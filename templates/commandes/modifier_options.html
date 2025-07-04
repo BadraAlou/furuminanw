@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-cog me-2"></i>
+                        {{ titre }}
+                    </h2>
+                    <p class="mb-0 text-muted">Modifiez les options de personnalisation pour ce produit</p>
+                </div>
+                <div class="card-body">
+                    <!-- Informations du produit -->
+                    <div class="product-info mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                {% if pack.image_principale %}
+                                    <img src="{{ pack.image_principale.url }}" alt="{{ pack.nom }}" class="img-fluid rounded">
+                                {% elif pack.images.first %}
+                                    <img src="{{ pack.images.first.image.url }}" alt="{{ pack.nom }}" class="img-fluid rounded">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/200" alt="{{ pack.nom }}" class="img-fluid rounded">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-9">
+                                <h4>{{ pack.nom }}</h4>
+                                <p class="text-muted">{{ pack.description|truncatewords:20 }}</p>
+                                <span class="badge bg-primary">{{ pack.get_categorie_display }}</span>
+                                <span class="badge bg-success ms-2">{{ pack.prix }} FCFA</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Formulaire de modification des options -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3">
+                            <i class="fas fa-magic me-2"></i>
+                            Options de personnalisation disponibles
+                        </h5>
+                        
+                        {% if pack.options.exists %}
+                            <div class="options-grid">
+                                {% for option_pack in pack.options.all %}
+                                    <div class="option-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   name="option_{{ option_pack.option.id }}" 
+                                                   id="option_{{ option_pack.option.id }}"
+                                                   {% if option_pack.option.id in options_actuelles %}checked{% endif %}>
+                                            <label class="form-check-label" for="option_{{ option_pack.option.id }}">
+                                                <div class="option-content">
+                                                    <h6 class="mb-1">{{ option_pack.option.nom }}</h6>
+                                                    {% if option_pack.option.description %}
+                                                        <p class="mb-1 text-muted small">{{ option_pack.option.description }}</p>
+                                                    {% endif %}
+                                                    {% if option_pack.prix_supplement > 0 %}
+                                                        <span class="badge bg-warning text-dark">
+                                                            +{{ option_pack.prix_supplement }} FCFA
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="badge bg-success">Inclus</span>
+                                                    {% endif %}
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="alert alert-info mt-4">
+                                <h6 class="mb-2">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    À propos des options
+                                </h6>
+                                <ul class="mb-0">
+                                    <li>Vous pourrez préciser vos préférences (textes à graver, couleurs, etc.) lors de la commande</li>
+                                    <li>Les options avec supplément seront ajoutées au prix de base</li>
+                                    <li>Nos artisans réaliseront votre trousseau selon vos spécifications</li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                <h6 class="mb-2">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Aucune option disponible
+                                </h6>
+                                <p class="mb-0">Ce pack ne propose pas d'options de personnalisation supplémentaires.</p>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Boutons d'action -->
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <a href="{% url 'commandes:panier' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour au panier
+                            </a>
+                            {% if pack.options.exists %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                </button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.product-info {
+    background-color: var(--color-accent);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.option-item {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.option-item:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.option-item .form-check-input:checked ~ .form-check-label .option-item,
+.option-item:has(.form-check-input:checked) {
+    border-color: var(--color-primary);
+    background-color: var(--color-accent);
+}
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.option-content h6 {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .option-item {
+        padding: 12px;
+    }
+    
+    .product-info {
+        padding: 15px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation des options au chargement
+    const options = document.querySelectorAll('.option-item');
+    options.forEach((option, index) => {
+        option.style.opacity = '0';
+        option.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            option.style.transition = 'all 0.5s ease';
+            option.style.opacity = '1';
+            option.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Gestion des clics sur les options
+    options.forEach(option => {
+        const checkbox = option.querySelector('.form-check-input');
+        const label = option.querySelector('.form-check-label');
+        
+        option.addEventListener('click', function(e) {
+            if (e.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+                updateOptionStyle(option, checkbox.checked);
+            }
+        });
+        
+        checkbox.addEventListener('change', function() {
+            updateOptionStyle(option, this.checked);
+        });
+        
+        // Initialiser le style
+        updateOptionStyle(option, checkbox.checked);
+    });
+    
+    function updateOptionStyle(option, isChecked) {
+        if (isChecked) {
+            option.style.borderColor = 'var(--color-primary)';
+            option.style.backgroundColor = 'var(--color-accent)';
+        } else {
+            option.style.borderColor = '#e9ecef';
+            option.style.backgroundColor = 'white';
+        }
+    }
+});
+</script>
+{% endblock %}

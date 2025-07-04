@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+.swiper {
+    width: 100%;
+    height: 500px;
+    margin-bottom: 20px;
+}
+
+.swiper-slide {
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 20px;
+}
+
+.thumbnail-swiper {
+    height: 100px;
+    box-sizing: border-box;
+    padding: 10px 0;
+}
+
+.thumbnail-swiper .swiper-slide {
+    width: 80px;
+    height: 80px;
+    opacity: 0.4;
+    cursor: pointer;
+}
+
+.thumbnail-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border: 2px solid var(--color-primary);
+}
+
+.thumbnail-swiper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-accent);
+    border-radius: 8px;
+}
+
+.quantity-input {
+    width: 120px;
+}
+
+.quantity-input .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.quantity-input input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.25rem;
+}
+
+/* Bouton favoris */
+.favorite-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.favorite-btn i {
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:not(.active) {
+    border-color: #ced4da;
+    color: #6c757d;
+}
+
+.favorite-btn.active {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn.active:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Animation de pulsation pour le bouton favoris */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.favorite-btn.animate i {
+    animation: heartBeat 0.6s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .swiper {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .swiper {
+        height: 350px;
+    }
+
+    .thumbnail-swiper {
+        height: 80px;
+    }
+
+    .thumbnail-swiper .swiper-slide {
+        width: 60px;
+        height: 60px;
+    }
+
+    .price {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .swiper {
+        height: 300px;
+    }
+
+    .thumbnail-swiper {
+        height: 70px;
+    }
+
+    .thumbnail-swiper .swiper-slide {
+        width: 50px;
+        height: 50px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Images du produit -->
+        <div class="col-lg-7">
+            <div class="product-images">
+                <!-- Slider principal -->
+                <div class="swiper main-swiper">
+                    <div class="swiper-wrapper">
+                        {% if pack.image_principale %}
+                            <div class="swiper-slide">
+                                <img src="{{ pack.image_principale.url }}" alt="{{ pack.nom }}">
+                            </div>
+                        {% endif %}
+                        {% for image in pack.images.all %}
+                            <div class="swiper-slide">
+                                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:pack.nom }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+
+                <!-- Slider miniatures -->
+                <div class="swiper thumbnail-swiper">
+                    <div class="swiper-wrapper">
+                        {% if pack.image_principale %}
+                            <div class="swiper-slide">
+                                <img src="{{ pack.image_principale.url }}" alt="{{ pack.nom }}">
+                            </div>
+                        {% endif %}
+                        {% for image in pack.images.all %}
+                            <div class="swiper-slide">
+                                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:pack.nom }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations produit -->
+        <div class="col-lg-5">
+            <h1 class="h2 mb-3">{{ pack.nom }}</h1>
+            <div class="price">{{ pack.prix }} FCFA</div>
+
+            <!-- Description avec accordéon -->
+            <div class="accordion mb-4" id="packDescription">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#descriptionCollapse" aria-expanded="true" aria-controls="descriptionCollapse">
+                            Description du pack
+                        </button>
+                    </h2>
+                    <div id="descriptionCollapse" class="accordion-collapse collapse show" data-bs-parent="#packDescription">
+                        <div class="accordion-body">
+                            {{ pack.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire d'ajout au panier -->
+            <form action="{% url 'commandes:ajouter_au_panier' pack.id %}" method="post">
+                {% csrf_token %}
+
+                {% if pack.options.exists %}
+                    <div class="mb-4">
+                        <h5 class="mb-3">Options supplémentaires:</h5>
+                        {% for option_pack in pack.options.all %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox"
+                                       name="option_{{ option_pack.option.id }}"
+                                       id="option_{{ option_pack.option.id }}">
+                                <label class="form-check-label" for="option_{{ option_pack.option.id }}">
+                                    {{ option_pack.option.nom }}
+                                    {% if option_pack.prix_supplement > 0 %}
+                                        <span class="text-muted">(+{{ option_pack.prix_supplement }} FCFA)</span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <label class="form-label mb-0">Quantité:</label>
+                    <div class="quantity-input">
+                        <div class="input-group input-group-sm">
+                            <button type="button" class="btn btn-outline-secondary" onclick="updateQuantity(-1)">-</button>
+                            <input type="number" class="form-control text-center" id="quantite" name="quantite" value="1" min="1" max="10">
+                            <button type="button" class="btn btn-outline-secondary" onclick="updateQuantity(1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">
+                        <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                    </button>
+                    <button type="button" class="btn btn-outline-primary favorite-btn {% if est_favori %}active{% endif %}" onclick="toggleFavori({{ pack.id }}, this)">
+                        <i class="{% if est_favori %}fas{% else %}far{% endif %} fa-heart"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialisation des sliders
+    const thumbsSwiper = new Swiper('.thumbnail-swiper', {
+        spaceBetween: 10,
+        slidesPerView: 'auto',
+        freeMode: true,
+        watchSlidesProgress: true,
+    });
+
+    const mainSwiper = new Swiper('.main-swiper', {
+        spaceBetween: 10,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        thumbs: {
+            swiper: thumbsSwiper,
+        },
+    });
+
+    // Gestion de la quantité
+    function updateQuantity(change) {
+        const input = document.getElementById('quantite');
+        const newValue = parseInt(input.value) + change;
+        if (newValue >= 1 && newValue <= 10) {
+            input.value = newValue;
+        }
+    }
+
+    // Gestion des favoris
+    function toggleFavori(packId, button) {
+        // Ajouter une animation
+        button.classList.add('animate');
+        setTimeout(() => button.classList.remove('animate'), 600);
+
+        // Déterminer l'action (ajouter ou supprimer)
+        const action = button.classList.contains('active') ? 'supprimer' : 'ajouter';
+
+        // Faire la requête AJAX
+        fetch(`/produits/favoris/${action}/${packId}/`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const icon = button.querySelector('i');
+
+                if (button.classList.contains('active')) {
+                    // Retirer des favoris
+                    button.classList.remove('active');
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                } else {
+                    // Ajouter aux favoris
+                    button.classList.add('active');
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

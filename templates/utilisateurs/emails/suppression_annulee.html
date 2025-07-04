@@ -1,0 +1,74 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Suppression de compte annulée - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Suppression de compte annulée</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">Votre compte a été réactivé</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ nom_prenom }}</strong>,</p>
+
+<p>Nous sommes ravis de vous informer que votre demande de suppression de compte a été annulée avec succès. Votre compte Furu Minanw est maintenant réactivé !</p>
+
+<div class="alert-box alert-success">
+    <h4 style="margin-top: 0; color: #2e7d32;"><i style="margin-right: 8px;">✅</i> Compte réactivé</h4>
+    <p style="margin: 0;">Votre compte est maintenant pleinement fonctionnel. Vous pouvez à nouveau accéder à tous nos services et passer des commandes.</p>
+</div>
+
+<div class="info-section">
+    <h3>Ce qui a été restauré</h3>
+    <ul style="margin: 0; padding-left: 20px;">
+        <li>Accès complet à votre compte</li>
+        <li>Toutes vos informations personnelles</li>
+        <li>Votre historique de commandes</li>
+        <li>Vos listes de favoris</li>
+        <li>Vos préférences de compte</li>
+    </ul>
+</div>
+
+<h3 style="color: #C27C4A; margin-bottom: 20px;">Que pouvez-vous faire maintenant ?</h3>
+
+<ul class="feature-list">
+    <li>
+        <div class="feature-icon">🛍️</div>
+        <div class="feature-text">
+            <h4>Reprendre vos achats</h4>
+            <p>Découvrez nos nouvelles collections de trousseaux et passez vos commandes en toute sérénité.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">👤</div>
+        <div class="feature-text">
+            <h4>Mettre à jour votre profil</h4>
+            <p>Vérifiez et mettez à jour vos informations personnelles si nécessaire.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">📞</div>
+        <div class="feature-text">
+            <h4>Nous contacter</h4>
+            <p>Si vous aviez des préoccupations, n'hésitez pas à nous en faire part pour améliorer nos services.</p>
+        </div>
+    </li>
+</ul>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="https://www.furuminanw.com/compte/profil/" class="btn">Accéder à mon compte</a>
+</div>
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">💡</i> Votre avis nous intéresse</h4>
+    <p style="margin: 0;">Si vous aviez des raisons spécifiques pour vouloir supprimer votre compte, nous aimerions connaître votre retour pour améliorer nos services. N'hésitez pas à nous contacter.</p>
+</div>
+
+<p style="margin-top: 30px;">
+    Nous sommes heureux de vous retrouver parmi nous !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ user.email }}
+{% endblock %}

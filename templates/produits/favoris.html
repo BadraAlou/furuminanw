@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ titre }}</h1>
+
+    {% if packs %}
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un pack..." aria-label="Rechercher un pack">
+                    <button class="btn btn-outline-secondary" type="button" aria-label="Rechercher">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <select id="sortSelect" class="form-select" aria-label="Trier par">
+                    <option value="nom">Trier par nom</option>
+                    <option value="prix-asc">Prix croissant</option>
+                    <option value="prix-desc">Prix décroissant</option>
+                    <option value="categorie">Catégorie</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row g-4" id="packsList">
+            {% for pack in packs %}
+                <div class="col-md-4 pack-item"
+                     data-nom="{{ pack.nom|lower }}"
+                     data-prix="{{ pack.prix }}"
+                     data-categorie="{{ pack.get_categorie_display }}">
+                    <div class="product-card">
+                        <div class="product-image">
+                            {% if pack.image_principale %}
+                                <img src="{{ pack.image_principale.url }}"
+                                     alt="{{ pack.nom }}"
+                                     class="product-img"
+                                     loading="lazy">
+                            {% elif pack.images.first %}
+                                <img src="{{ pack.images.first.image.url }}"
+                                     alt="{{ pack.nom }}"
+                                     class="product-img"
+                                     loading="lazy">
+                            {% else %}
+                                <img src="https://via.placeholder.com/800x600"
+                                     alt="{{ pack.nom }}"
+                                     class="product-img">
+                            {% endif %}
+                        </div>
+                        <div class="product-content">
+                            <span class="category-badge {{ pack.categorie }}">
+                                {{ pack.get_categorie_display }}
+                            </span>
+                            <h2>{{ pack.nom }}</h2>
+                            <p>{{ pack.description|truncatewords:15 }}</p>
+                            <div class="price">{{ pack.prix }} FCFA</div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ pack.get_absolute_url }}" class="btn btn-primary flex-grow-1">
+                                    Voir le détail
+                                </a>
+                                <button type="button"
+                                        class="btn btn-outline-danger remove-favorite"
+                                        data-pack-id="{{ pack.id }}"
+                                        onclick="supprimerFavori({{ pack.id }})"
+                                        aria-label="Retirer des favoris">
+                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="far fa-heart fa-4x text-muted mb-3" aria-hidden="true"></i>
+            <h2>Aucun favori</h2>
+            <p class="text-muted mb-4">Vous n'avez pas encore ajouté de pack à vos favoris.</p>
+            <a href="{% url 'produits:liste_packs' %}" class="btn btn-primary btn-lg">
+                Découvrir nos packs
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.product-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.product-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+.product-content {
+    padding: 20px;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.category-badge.standard {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.category-badge.prestige {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.category-badge.luxe {
+    background-color: var(--color-text);
+    color: white;
+}
+
+.price {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.remove-favorite {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#searchInput, #sortSelect {
+    border-radius: 8px;
+    padding: 0.75rem;
+    border: 1px solid var(--color-secondary);
+}
+
+#searchInput:focus, #sortSelect:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(194, 124, 74, 0.25);
+}
+
+/* Animation de suppression */
+@keyframes fadeOutUp {
+    from {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+    }
+}
+
+.fade-out-up {
+    animation: fadeOutUp 0.5s ease forwards;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .product-image {
+        height: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .row.mb-4 {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .col-md-6 {
+        width: 100%;
+    }
+
+    .product-card {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-image {
+        height: 180px;
+    }
+
+    .product-content {
+        padding: 15px;
+    }
+
+    .product-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .price {
+        font-size: 1.1rem;
+    }
+
+    .remove-favorite {
+        width: 40px;
+        height: 40px;
+    }
+}
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonction de recherche
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const packsList = document.getElementById('packsList');
+    const packItems = document.querySelectorAll('.pack-item');
+
+    // Fonction de recherche
+    searchInput.addEventListener('input', filterPacks);
+
+    // Fonction de tri
+    sortSelect.addEventListener('change', sortPacks);
+
+    function filterPacks() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        packItems.forEach(item => {
+            const nom = item.dataset.nom;
+            const visible = nom.includes(searchTerm);
+            item.style.display = visible ? '' : 'none';
+        });
+    }
+
+    function sortPacks() {
+        const sortValue = sortSelect.value;
+        const itemsArray = Array.from(packItems);
+
+        itemsArray.sort((a, b) => {
+            switch(sortValue) {
+                case 'nom':
+                    return a.dataset.nom.localeCompare(b.dataset.nom);
+                case 'prix-asc':
+                    return parseFloat(a.dataset.prix) - parseFloat(b.dataset.prix);
+                case 'prix-desc':
+                    return parseFloat(b.dataset.prix) - parseFloat(a.dataset.prix);
+                case 'categorie':
+                    return a.dataset.categorie.localeCompare(b.dataset.categorie);
+                default:
+                    return 0;
+            }
+        });
+
+        itemsArray.forEach(item => packsList.appendChild(item));
+    }
+
+    // Animation des cartes au chargement
+    packItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+
+function supprimerFavori(packId) {
+    if (confirm('Voulez-vous vraiment retirer ce pack de vos favoris ?')) {
+        const packElement = document.querySelector(`[data-pack-id="${packId}"]`).closest('.pack-item');
+
+        // Ajouter l'animation de suppression
+        packElement.classList.add('fade-out-up');
+
+        // Attendre la fin de l'animation avant de faire l'appel AJAX
+        setTimeout(() => {
+            fetch(`/produits/favoris/supprimer/${packId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Supprimer l'élément du DOM
+                    packElement.remove();
+
+                    // Vérifier s'il reste des packs
+                    const remainingPacks = document.querySelectorAll('.pack-item');
+                    if (remainingPacks.length === 0) {
+                        location.reload(); // Recharger pour afficher le message "Aucun favori"
+                    }
+                }
+            });
+        }, 500); // Attendre 500ms pour que l'animation se termine
+    }
+}
+</script>
+{% endblock %}
+{% endblock %}

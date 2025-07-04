@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>{{ titre }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Attention !</h5>
+                        <p class="mb-0">La suppression de votre compte est une action sérieuse. Lisez attentivement les informations ci-dessous avant de continuer.</p>
+                    </div>
+                    
+                    <h4 class="text-danger mb-3">Que se passe-t-il quand vous supprimez votre compte ?</h4>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title text-danger"><i class="fas fa-trash me-2"></i>Données supprimées</h6>
+                                    <ul class="mb-0">
+                                        <li>Informations personnelles</li>
+                                        <li>Adresses de livraison</li>
+                                        <li>Préférences de compte</li>
+                                        <li>Historique de navigation</li>
+                                        <li>Favoris et listes</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title text-info"><i class="fas fa-archive me-2"></i>Données conservées</h6>
+                                    <ul class="mb-0">
+                                        <li>Commandes (anonymisées)</li>
+                                        <li>Factures légales</li>
+                                        <li>Données comptables</li>
+                                        <li>Historique SAV (anonymisé)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6 class="mb-2"><i class="fas fa-clock me-2"></i>Délai de grâce de 30 jours</h6>
+                        <p class="mb-0">Votre compte ne sera pas supprimé immédiatement. Vous disposez de <strong>30 jours</strong> pour changer d'avis et annuler cette demande. Pendant cette période, votre compte sera désactivé mais récupérable.</p>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Conformité RGPD</h6>
+                        <p class="mb-0">Cette suppression respecte le Règlement Général sur la Protection des Données (RGPD). Certaines données peuvent être conservées pour des obligations légales ou comptables.</p>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="mb-3">Confirmer la suppression</h5>
+                    <p>Pour confirmer que vous souhaitez supprimer votre compte, veuillez :</p>
+                    
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            {{ form.password|as_crispy_field }}
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            {{ form.confirmation }}
+                            <label class="form-check-label" for="{{ form.confirmation.id_for_label }}">
+                                {{ form.confirmation.label }}
+                            </label>
+                        </div>
+                        
+                        <div class="alert alert-secondary">
+                            <h6 class="mb-2"><i class="fas fa-envelope me-2"></i>Ce qui va se passer ensuite :</h6>
+                            <ol class="mb-0">
+                                <li>Votre compte sera immédiatement désactivé</li>
+                                <li>Vous recevrez un email de confirmation avec un lien d'annulation</li>
+                                <li>Vous aurez 30 jours pour annuler cette demande</li>
+                                <li>Après 30 jours, votre compte sera définitivement supprimé</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'utilisateurs:profil' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous absolument certain de vouloir supprimer votre compte ? Cette action déclenchera un processus de suppression.')">
+                                <i class="fas fa-trash-alt me-2"></i>Demander la suppression
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.alert {
+    border-radius: 8px;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+</style>
+{% endblock %}

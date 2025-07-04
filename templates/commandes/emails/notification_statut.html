@@ -1,0 +1,106 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Mise à jour de votre commande #{{ commande.id }} - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>Mise à jour de votre commande</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">Commande #{{ commande.id }}</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ nom_prenom }}</strong>,</p>
+
+<p>Nous vous informons que le statut de votre commande a été mis à jour.</p>
+
+<div class="info-section">
+    <h3>Nouveau statut de votre commande</h3>
+    <div style="text-align: center; padding: 20px; background-color: white; border-radius: 8px; margin: 15px 0;">
+        <div style="font-size: 24px; font-weight: bold; color: #C27C4A; margin-bottom: 10px;">
+            {{ commande.get_statut_display }}
+        </div>
+        <p style="margin: 0; color: #666;">Commande #{{ commande.id }}</p>
+    </div>
+</div>
+
+{% if commande.statut == 'confirmee' %}
+<div class="alert-box alert-success">
+    <h4 style="margin-top: 0; color: #2e7d32;"><i style="margin-right: 8px;">✅</i> Commande confirmée</h4>
+    <p style="margin: 0;">Votre commande a été confirmée et notre équipe commence la préparation de votre trousseau avec le plus grand soin.</p>
+</div>
+{% elif commande.statut == 'en_preparation' %}
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">🔨</i> En préparation</h4>
+    <p style="margin: 0;">Nos artisans travaillent actuellement sur votre trousseau. Chaque pièce est fabriquée avec attention aux détails.</p>
+</div>
+{% elif commande.statut == 'expediee' %}
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">🚚</i> Commande expédiée</h4>
+    <p style="margin: 0;">Votre trousseau est en route ! Nous vous contacterons bientôt pour organiser la livraison.</p>
+    {% if commande.numero_suivi %}
+    <p style="margin: 10px 0 0 0;"><strong>Numéro de suivi :</strong> {{ commande.numero_suivi }}</p>
+    {% endif %}
+</div>
+{% elif commande.statut == 'livree' %}
+<div class="alert-box alert-success">
+    <h4 style="margin-top: 0; color: #2e7d32;"><i style="margin-right: 8px;">🎉</i> Commande livrée</h4>
+    <p style="margin: 0;">Félicitations ! Votre trousseau a été livré avec succès. Nous espérons qu'il vous plaît et vous souhaitons un mariage merveilleux !</p>
+</div>
+{% elif commande.statut == 'annulee' %}
+<div class="alert-box alert-danger">
+    <h4 style="margin-top: 0; color: #d32f2f;"><i style="margin-right: 8px;">❌</i> Commande annulée</h4>
+    <p style="margin: 0;">Votre commande a été annulée. Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+</div>
+{% endif %}
+
+{% if commande.date_livraison_estimee %}
+<div class="info-section">
+    <h3>Informations de livraison</h3>
+    <p><strong>Date de livraison estimée :</strong> {{ commande.date_livraison_estimee|date:"d/m/Y" }}</p>
+    <p><strong>Adresse de livraison :</strong><br>
+    {{ commande.adresse_livraison }}<br>
+    {{ commande.ville }}, {{ commande.code_postal }}<br>
+    {{ commande.pays }}</p>
+</div>
+{% endif %}
+
+<div class="info-section">
+    <h3>Récapitulatif de votre commande</h3>
+    <p><strong>Date de commande :</strong> {{ commande.date_commande|date:"d/m/Y à H:i" }}</p>
+    <p><strong>Total :</strong> {{ total }} FCFA</p>
+    <p><strong>Mode de paiement :</strong> {{ commande.get_methode_paiement_display }} (à la livraison)</p>
+
+    <h4 style="color: #C27C4A; margin-top: 20px;">Articles commandés :</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+        {% for element in elements %}
+        <li style="margin-bottom: 8px;">
+            <strong>{{ element.pack.nom }}</strong> - Quantité: {{ element.quantite }} - {{ element.prix }} FCFA
+            {% if element.options_selectionnees.exists %}
+            <br><small style="color: #666;">Options:
+                {% for option in element.options_selectionnees.all %}
+                    {{ option.nom }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </small>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="https://www.furuminanw.com/compte/commandes/" class="btn">Voir ma commande</a>
+</div>
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">📞</i> Besoin d'aide ?</h4>
+    <p style="margin: 0;">Si vous avez des questions concernant votre commande, n'hésitez pas à nous contacter. Notre équipe est là pour vous aider.</p>
+</div>
+
+<p style="margin-top: 30px;">
+    Merci de votre confiance !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+Cet email a été envoyé à {{ commande.email }}
+{% endblock %}

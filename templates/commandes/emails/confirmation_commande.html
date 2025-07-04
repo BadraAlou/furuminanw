@@ -1,0 +1,324 @@
+<!-- furu_minanw/templates/commandes/emails/confirmation_commande.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de commande - Furu Minanw</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #C27C4A;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .order-number {
+            background-color: #f9f5f1;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-left: 4px solid #C27C4A;
+        }
+        .order-number h2 {
+            margin: 0;
+            color: #C27C4A;
+            font-size: 24px;
+        }
+        .order-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .order-details h3 {
+            margin-top: 0;
+            color: #C27C4A;
+            border-bottom: 2px solid #C27C4A;
+            padding-bottom: 10px;
+        }
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        .order-table th, .order-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .order-table th {
+            background-color: #C27C4A;
+            color: white;
+            font-weight: bold;
+        }
+        .order-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .total-section {
+            background-color: #f9f5f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .total-row.final {
+            font-weight: bold;
+            font-size: 18px;
+            color: #C27C4A;
+            border-top: 2px solid #C27C4A;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+        .shipping-info {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .shipping-info h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .payment-info {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .payment-info h4 {
+            margin-top: 0;
+            color: #f57c00;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #f8f9fa;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #ddd;
+        }
+        .contact-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contact-item i {
+            margin-right: 8px;
+            color: #C27C4A;
+        }
+        .contact-item a {
+            color: #C27C4A;
+            text-decoration: none;
+        }
+        .social-links {
+            margin-top: 15px;
+        }
+        .social-links a {
+            color: #C27C4A;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            .content {
+                padding: 20px 15px;
+            }
+            .order-table {
+                font-size: 14px;
+            }
+            .order-table th, .order-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Furu Minanw</h1>
+            <p>Votre trousseau nuptial d'exception</p>
+        </div>
+
+        <div class="content">
+            <div class="order-number">
+                <h2>Merci pour votre commande !</h2>
+                <p style="margin: 10px 0 0 0; font-size: 18px;">Commande #{{ commande.id }}</p>
+            </div>
+
+            <p style="font-size: 16px;">Bonjour <strong>{{ nom_prenom }}</strong>,</p>
+
+            <p>Nous vous remercions pour votre commande chez Furu Minanw. Voici un récapitulatif de votre commande :</p>
+
+            <div class="order-details">
+                <h3>Informations de la commande</h3>
+                <p><strong>Numéro de commande :</strong> #{{ commande.id }}</p>
+                <p><strong>Date :</strong> {{ commande.date_commande|date:"d/m/Y à H:i" }}</p>
+                <p><strong>Statut :</strong> {{ commande.get_statut_display }}</p>
+            </div>
+
+            <h3 style="color: #C27C4A; margin-bottom: 20px;">Détails de votre commande</h3>
+
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th style="text-align: right;">Prix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for element in elements %}
+                        <tr>
+                            <td>
+                                <strong>{{ element.pack.nom }}</strong>
+                                <br>
+                                <small style="color: #666;">{{ element.pack.get_categorie_display }}</small>
+                                {% if element.options_selectionnees.exists %}
+                                    <br>
+                                    <small style="color: #C27C4A;">
+                                        <strong>Options :</strong>
+                                        {% for option in element.options_selectionnees.all %}
+                                            {{ option.nom }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </small>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">{{ element.quantite }}</td>
+                            <td style="text-align: right;"><strong>{{ element.prix }} FCFA</strong></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Sous-total :</span>
+                    <span>{{ total }} FCFA</span>
+                </div>
+                <div class="total-row">
+                    <span>Frais de livraison :</span>
+                    <span style="color: #28a745;">Gratuit</span>
+                </div>
+                <div class="total-row final">
+                    <span>Total à payer :</span>
+                    <span>{{ total }} FCFA</span>
+                </div>
+            </div>
+
+            <div class="shipping-info">
+                <h4><i style="margin-right: 8px;">📍</i> Adresse de livraison</h4>
+                <p style="margin: 0;">
+                    {{ commande.adresse_livraison }}<br>
+                    {{ commande.ville }}, {{ commande.code_postal }}<br>
+                    {{ commande.pays }}
+                </p>
+                <p style="margin: 15px 0 0 0;">
+                    <strong>Contact :</strong> <a href="tel:+223{{ commande.telephone|cut:' ' }}" style="color: #1976d2;">{{ commande.telephone }}</a><br>
+                    <strong>Email :</strong> <a href="mailto:{{ commande.email }}" style="color: #1976d2;">{{ commande.email }}</a>
+                </p>
+            </div>
+
+            <div class="payment-info">
+                <h4><i style="margin-right: 8px;">💳</i> Information de paiement</h4>
+                <p><strong>Important : Le paiement se fait uniquement à la livraison.</strong></p>
+                <p>Vous pourrez payer lors de la réception de votre commande via :</p>
+                <ul style="margin: 10px 0;">
+                    <li>Espèces</li>
+                    <li>Orange Money</li>
+                    <li>Wave</li>
+                </ul>
+                <p><strong>Méthode choisie :</strong> {{ commande.get_methode_paiement_display }}</p>
+            </div>
+
+            <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #0066cc;">
+                <h4 style="margin-top: 0; color: #0066cc;"><i style="margin-right: 8px;">ℹ️</i> Prochaines étapes</h4>
+                <ol style="margin: 0; padding-left: 20px;">
+                    <li>Notre équipe va préparer votre commande avec soin</li>
+                    <li>Nous vous contacterons pour confirmer la date de livraison</li>
+                    <li>Vous recevrez un email de suivi à chaque étape</li>
+                    <li>Le paiement se fera à la réception de votre trousseau</li>
+                </ol>
+            </div>
+
+            <p>Si vous avez des questions concernant votre commande, n'hésitez pas à nous contacter.</p>
+
+            <p style="margin-top: 30px;">
+                Merci de votre confiance et à très bientôt !<br>
+                <strong>L'équipe Furu Minanw</strong>
+            </p>
+        </div>
+
+        <div class="footer">
+            <div class="contact-info">
+                <p><strong>Furu Minanw</strong></p>
+
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <a href="https://maps.app.goo.gl/kjm7iFSPfGDtNgvGA?g_st=iw" target="_blank">
+                        Bacodjokoroni Aci, Bamako, Mali
+                    </a>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <a href="tel:+22362980318">62 98 03 18</a>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:furuminanw@gmail.com">furuminanw@gmail.com</a>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61576750467318" target="_blank">Facebook</a> |
+                    <a href="https://www.instagram.com/furuminanw?igsh=anE5YXhoeXMybnl2&utm_source=qr" target="_blank">Instagram</a> |
+                    <a href="mailto:furuminanw@gmail.com">Email</a>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                &copy; {% now "Y" %} Furu Minanw. Tous droits réservés.<br>
+                Cet email a été envoyé à {{ commande.email }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}{{ sujet }} - Furu Minanw{% endblock %}
+
+{% block content %}
+<div class="highlight-box">
+    <h2>{{ titre_newsletter }}</h2>
+    <p style="margin: 10px 0 0 0; font-size: 18px;">{{ sous_titre }}</p>
+</div>
+
+<p style="font-size: 16px;">Bonjour <strong>{{ prenom|default:"cher(e) client(e)" }}</strong>,</p>
+
+<p>{{ introduction }}</p>
+
+{% if nouveautes %}
+<div class="info-section">
+    <h3>Nos nouveautés</h3>
+    {% for nouveaute in nouveautes %}
+    <div style="background-color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #C27C4A;">
+        <h4 style="margin: 0 0 10px 0; color: #C27C4A;">{{ nouveaute.titre }}</h4>
+        <p style="margin: 0;">{{ nouveaute.description }}</p>
+        {% if nouveaute.prix %}
+        <p style="margin: 10px 0 0 0; font-weight: bold; color: #C27C4A;">À partir de {{ nouveaute.prix }} FCFA</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if promotion %}
+<div class="alert-box alert-warning">
+    <h4 style="margin-top: 0; color: #f57c00;"><i style="margin-right: 8px;">🎉</i> Offre spéciale</h4>
+    <p style="margin: 0;">{{ promotion.description }}</p>
+    {% if promotion.code %}
+    <p style="margin: 10px 0 0 0;"><strong>Code promo :</strong> <span style="background-color: #fff; padding: 5px 10px; border-radius: 4px; font-family: monospace;">{{ promotion.code }}</span></p>
+    {% endif %}
+</div>
+{% endif %}
+
+<h3 style="color: #C27C4A; margin-bottom: 20px;">Pourquoi choisir Furu Minanw ?</h3>
+
+<ul class="feature-list">
+    <li>
+        <div class="feature-icon">✨</div>
+        <div class="feature-text">
+            <h4>Artisanat authentique</h4>
+            <p>Chaque pièce est fabriquée à la main par nos artisans maliens expérimentés.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">🎨</div>
+        <div class="feature-text">
+            <h4>Personnalisation complète</h4>
+            <p>Adaptez votre trousseau selon vos goûts et traditions familiales.</p>
+        </div>
+    </li>
+    <li>
+        <div class="feature-icon">🚚</div>
+        <div class="feature-text">
+            <h4>Livraison gratuite</h4>
+            <p>Profitez de la livraison gratuite sur Bamako et paiement à la réception.</p>
+        </div>
+    </li>
+</ul>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="https://www.furuminanw.com/produits/" class="btn">Découvrir nos collections</a>
+</div>
+
+{% if temoignage %}
+<div class="info-section">
+    <h3>Témoignage client</h3>
+    <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center;">
+        <p style="font-style: italic; margin: 0 0 15px 0; font-size: 16px;">"{{ temoignage.message }}"</p>
+        <p style="margin: 0; font-weight: bold; color: #C27C4A;">{{ temoignage.nom }}</p>
+        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">{{ temoignage.ville }}</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="alert-box alert-info">
+    <h4 style="margin-top: 0; color: #1976d2;"><i style="margin-right: 8px;">💌</i> Restez connecté</h4>
+    <p style="margin: 0;">Suivez-nous sur nos réseaux sociaux pour ne rien manquer de nos actualités et conseils pour votre mariage.</p>
+</div>
+
+<p style="margin-top: 30px;">
+    Merci de votre fidélité !<br>
+    <strong>L'équipe Furu Minanw</strong>
+</p>
+
+{% if unsubscribe_url %}
+<p style="margin-top: 20px; font-size: 12px; color: #999; text-align: center;">
+    <a href="{{ unsubscribe_url }}" style="color: #999;">Se désabonner de cette newsletter</a>
+</p>
+{% endif %}
+{% endblock %}
+
+{% block footer_extra %}
+Vous recevez cet email car vous êtes abonné(e) à notre newsletter
+{% endblock %}

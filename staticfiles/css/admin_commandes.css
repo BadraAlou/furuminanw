@@ -1,0 +1,52 @@
+.statut-en-attente {
+    color: #FFC107 !important;
+}
+
+.statut-confirmee {
+    color: #17A2B8 !important;
+}
+
+.statut-en-preparation {
+    color: #007BFF !important;
+}
+
+.statut-expediee {
+    color: #6610F2 !important;
+}
+
+.statut-livree {
+    color: #28A745 !important;
+}
+
+.statut-annulee {
+    color: #DC3545 !important;
+}
+
+.field-statut_colore span {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.field-actions .button {
+    padding: 4px 8px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.field-actions .button:hover {
+    background-color: #0056b3;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.bg-secondary {
+    background-color: #6c757d;
+    color: white;
+}

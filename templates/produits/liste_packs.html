@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-5">{{ titre }}</h1>
+
+    <!-- Liste des packs -->
+    <div class="row g-4">
+        {% for pack in packs %}
+            <div class="col-md-4">
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if pack.image_principale %}
+                            <img src="{{ pack.image_principale.url }}"
+                                 alt="{{ pack.nom }}"
+                                 class="product-img"
+                                 loading="lazy">
+                        {% elif pack.images.first %}
+                            <img src="{{ pack.images.first.image.url }}"
+                                 alt="{{ pack.nom }}"
+                                 class="product-img"
+                                 loading="lazy">
+                        {% else %}
+                            <img src="https://via.placeholder.com/800x600"
+                                 alt="{{ pack.nom }}"
+                                 class="product-img">
+                        {% endif %}
+
+                        <!-- Bouton favoris -->
+                        {% if user.is_authenticated %}
+                            <button class="favorite-btn {% if pack in user.packs_favoris.all %}active{% endif %}"
+                                    data-pack-id="{{ pack.id }}"
+                                    onclick="toggleFavorite({{ pack.id }}, this)"
+                                    title="{% if pack in user.packs_favoris.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}"
+                                    aria-label="{% if pack in user.packs_favoris.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}">
+                                <i class="{% if pack in user.packs_favoris.all %}fas{% else %}far{% endif %} fa-heart" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                    <div class="product-content">
+                        <span class="category-badge {{ pack.categorie }}">{{ pack.get_categorie_display }}</span>
+                        <h2>{{ pack.nom }}</h2>
+                        <p>{{ pack.description|truncatewords:15 }}</p>
+                        <div class="price">{{ pack.prix }} FCFA</div>
+                        <a href="{{ pack.get_absolute_url }}" class="btn-detail">Voir le détail</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Navigation entre catégories -->
+    <div class="categories-nav mt-5">
+        <h3 class="text-center mb-4">Explorer par catégorie</h3>
+        <div class="categories-buttons">
+            <a href="{% url 'produits:liste_packs' %}"
+               class="category-btn {% if not categorie %}active{% endif %}"
+               aria-current="{% if not categorie %}page{% else %}false{% endif %}">
+               Tous les packs
+            </a>
+            <a href="{% url 'produits:liste_packs_par_categorie' categorie='standard' %}"
+               class="category-btn {% if categorie == 'standard' %}active{% endif %}"
+               aria-current="{% if categorie == 'standard' %}page{% else %}false{% endif %}">
+               Standard
+            </a>
+            <a href="{% url 'produits:liste_packs_par_categorie' categorie='prestige' %}"
+               class="category-btn {% if categorie == 'prestige' %}active{% endif %}"
+               aria-current="{% if categorie == 'prestige' %}page{% else %}false{% endif %}">
+               Prestige
+            </a>
+            <a href="{% url 'produits:liste_packs_par_categorie' categorie='luxe' %}"
+               class="category-btn {% if categorie == 'luxe' %}active{% endif %}"
+               aria-current="{% if categorie == 'luxe' %}page{% else %}false{% endif %}">
+               Luxe
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.product-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.product-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+/* Bouton favoris */
+.favorite-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: #ccc;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.favorite-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    color: #e74c3c;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.favorite-btn.active {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+.favorite-btn.active:hover {
+    background: rgba(231, 76, 60, 0.2);
+    color: #c0392b;
+}
+
+.favorite-btn i {
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:hover i {
+    transform: scale(1.2);
+}
+
+.product-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.category-badge.standard {
+    background-color: #F5E6D3;
+    color: #C27C4A;
+}
+
+.category-badge.prestige {
+    background-color: #C27C4A;
+    color: white;
+}
+
+.category-badge.luxe {
+    background-color: #2C1810;
+    color: white;
+}
+
+.product-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #2C1810;
+}
+
+.product-content p {
+    color: #666;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.price {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #C27C4A;
+    margin-bottom: 15px;
+}
+
+.btn-detail {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    background: transparent;
+    border: 2px solid #C27C4A;
+    color: #C27C4A;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-detail:hover {
+    background: #C27C4A;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.categories-nav {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px 0;
+    background-color: var(--color-accent);
+    border-radius: 12px;
+}
+
+.categories-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    padding: 10px 25px;
+    border: 2px solid #C27C4A;
+    border-radius: 25px;
+    color: #C27C4A;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background: #C27C4A;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(194, 124, 74, 0.2);
+}
+
+/* Animation de pulsation pour le bouton favoris */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.favorite-btn.animate {
+    animation: heartBeat 0.6s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .product-image {
+        height: 250px;
+    }
+
+    .product-content h2 {
+        font-size: 1.3rem;
+    }
+
+    .price {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .categories-buttons {
+        flex-direction: column;
+        gap: 10px;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .category-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-image {
+        height: 200px;
+    }
+
+    .favorite-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .product-content {
+        padding: 15px;
+    }
+
+    .product-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .price {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .btn-detail {
+        padding: 10px;
+    }
+}
+</style>
+
+<script>
+function toggleFavorite(packId, button) {
+    // Animation immédiate pour le feedback utilisateur
+    button.classList.add('animate');
+    setTimeout(() => button.classList.remove('animate'), 600);
+
+    fetch(`/produits/favoris/${button.classList.contains('active') ? 'supprimer' : 'ajouter'}/${packId}/`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const icon = button.querySelector('i');
+
+            if (button.classList.contains('active')) {
+                // Retirer des favoris
+                button.classList.remove('active');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                button.title = 'Ajouter aux favoris';
+                button.setAttribute('aria-label', 'Ajouter aux favoris');
+            } else {
+                // Ajouter aux favoris
+                button.classList.add('active');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                button.title = 'Retirer des favoris';
+                button.setAttribute('aria-label', 'Retirer des favoris');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+    });
+}
+
+// Animation des cartes au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    const productCards = document.querySelectorAll('.product-card');
+
+    productCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}
