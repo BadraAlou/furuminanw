@@ -11,7 +11,8 @@ SECRET_KEY = 'django-insecure-furu-minanw-secret-key-change-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['31.207.35.193', 'localhost', '127.0.0.1', 'furuminanw.com']
 
 # Application definition
 INSTALLED_APPS = [
