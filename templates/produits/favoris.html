@@ -7,21 +7,7 @@
     {% if packs %}
         <div class="row mb-4">
             <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un pack..." aria-label="Rechercher un pack">
-                    <button class="btn btn-outline-secondary" type="button" aria-label="Rechercher">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <select id="sortSelect" class="form-select" aria-label="Trier par">
-                    <option value="nom">Trier par nom</option>
-                    <option value="prix-asc">Prix croissant</option>
-                    <option value="prix-desc">Prix décroissant</option>
-                    <option value="categorie">Catégorie</option>
-                </select>
-            </div>
+
         </div>
 
         <div class="row g-4" id="packsList">
@@ -339,5 +325,4 @@ function supprimerFavori(packId) {
     }
 }
 </script>
-{% endblock %}
 {% endblock %}
